@@ -198,7 +198,7 @@
         </button>
 
         <div>
-            <button type="button" onclick="window.location.href='../Log_In/login.php?logout=true';" class="btn btn-success btn-sm">LOG IN</button>
+            <button type="button" onclick="window.location.href='login.php';" class="btn btn-success btn-sm">LOG IN</button>
         </div>
     </nav>
 
@@ -212,9 +212,6 @@
 
 
                 <!-- Calendar Container -->
-                <div id="calendar"></div>
-
-
                 <div id="calendar"></div>
 
                 <!-- Legends Section -->
@@ -244,215 +241,249 @@
                 </div>
                 <div class="upcoming-events-section">
                     <h4>UPCOMING EVENTS</h4>
-                    <table class="table table-bordered table-striped">
-                        <thead>
-                            <tr>
-                                <th>Event Name</th>
-                                <th>Start Date</th>
-                                <th>End Date</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="upcomingEventsBody">
-                            <tr>
-                                <td><a href="#" class="event-link" data-event-name="Event 1" data-start-date="2024-10-10" data-end-date="2024-10-12" data-start-time="09:00" data-end-time="17:00" data-facility="FUNCTION HALL" data-description="Description for Event 1" data-status="Pending">Event 1</a></td>
-                                <td>2024-10-10</td>
-                                <td>2024-10-12</td>
-                                <td><span class="legend-color status-pending"></span>Pending</td>
-                            </tr>
-                            <tr>
-                                <td><a href="#" class="event-link" data-event-name="Event 2" data-start-date="2024-10-15" data-end-date="2024-10-16" data-start-time="10:00" data-end-time="14:00" data-facility="GYMNASIUM" data-description="Description for Event 2" data-status="Approve">Event 2</a></td>
-                                <td>2024-10-15</td>
-                                <td>2024-10-16</td>
-                                <td><span class="legend-color status-approve"></span>Approve</td>
-                            </tr>
-                            <!-- Add more events here -->
-                        </tbody>
-                    </table>
+                    <table class="table table-bordered table-striped mt-4">
+    <thead>
+        <tr>
+            <th>Event Name</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody id="upcomingEventsBody">
+        <!-- Events will be dynamically added here -->
+    </tbody>
+</table>
+
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Book Event Modal -->
-    <div class="modal fade" id="bookEventModal" tabindex="-1" role="dialog" aria-labelledby="bookEventModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="bookEventModalLabel">Book an Event</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form>
-                        <div class="form-group">
-                            <label for="eventName">Event Name</label>
-                            <input type="text" class="form-control" id="eventName" placeholder="Enter event name">
-                        </div>
-                        <div class="form-group">
-                            <label for="startDate">Start Date</label>
-                            <input type="date" class="form-control" id="startDate">
-                        </div>
-                        <div class="form-group">
-                            <label for="endDate">End Date</label>
-                            <input type="date" class="form-control" id="endDate">
-                        </div>
-                        <div class="form-group">
-                            <label for="startTime">Start Time</label>
-                            <input type="time" class="form-control" id="startTime">
-                        </div>
-                        <div class="form-group">
-                            <label for="endTime">End Time</label>
-                            <input type="time" class="form-control" id="endTime">
-                        </div>
-                        <div class="form-group">
-                            <label for="facility">Facility</label>
-                            <select class="form-control" id="facility">
-                                <option value="EARTS">EARTS</option>
-                                <option value="FUNCTION HALL">FUNCTION HALL</option>
-                                <option value="GYMNASIUM">GYMNASIUM</option>
-                                <option value="QUADRANGLE">QUADRANGLE</option>
-                                <option value="AVEC">AVEC</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="eventDescription">Description</label>
-                            <textarea class="form-control" id="eventDescription" rows="3"></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Book</button>
-                    </form>
-                </div>
+<!-- Book Event Modal -->
+<div class="modal fade" id="bookEventModal" tabindex="-1" role="dialog" aria-labelledby="bookEventModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="bookEventModalLabel">Book an Event</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="bookingForm" enctype="multipart/form-data"> <!-- Add enctype for file uploads -->
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="eventName">Event Name</label>
+                        <input type="text" class="form-control" id="eventName" name="eventName" placeholder="Enter event name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="startDate">Start Date</label>
+                        <input type="date" class="form-control" id="startDate" name="startDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="endDate">End Date</label>
+                        <input type="date" class="form-control" id="endDate" name="endDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="startTime">Start Time</label>
+                        <input type="time" class="form-control" id="startTime" name="startTime" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="endTime">End Time</label>
+                        <input type="time" class="form-control" id="endTime" name="endTime">
+                    </div>
+                    <div class="form-group">
+                        <label for="facility">Facility</label>
+                        <select class="form-control" id="facility" name="facility" required>
+                            <option value="EARTS">EARTS</option>
+                            <option value="FUNCTION HALL">FUNCTION HALL</option>
+                            <option value="GYMNASIUM">GYMNASIUM</option>
+                            <option value="QUADRANGLE">QUADRANGLE</option>
+                            <option value="AVEC">AVEC</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="eventDescription">Description</label>
+                        <textarea class="form-control" id="eventDescription" name="eventDescription" rows="3" placeholder="Enter event description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="letterOfRequest">Letter of Request (PDF)</label>
+                        <input type="file" class="form-control" id="letterOfRequest" name="letterOfRequest" accept=".pdf">
+                    </div>
+                    <div class="form-group">
+                        <label for="facilityFormRequest">Facility Form Request (PDF)</label>
+                        <input type="file" class="form-control" id="facilityFormRequest" name="facilityFormRequest" accept=".pdf">
+                    </div>
+                    <div class="form-group">
+                        <label for="contractOfLease">Contract of Lease (PDF)</label>
+                        <input type="file" class="form-control" id="contractOfLease" name="contractOfLease" accept=".pdf">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Book</button>
+                </form>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Event Details Modal -->
-    <div class="modal fade" id="eventDetailsModal" tabindex="-1" role="dialog" aria-labelledby="eventDetailsModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="eventDetailsModalLabel">Event Details</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p><strong>Event Name:</strong> <span id="eventDetailName"></span></p>
-                    <p><strong>Start Date:</strong> <span id="eventDetailStartDate"></span></p>
-                    <p><strong>End Date:</strong> <span id="eventDetailEndDate"></span></p>
-                    <p><strong>Start Time:</strong> <span id="eventDetailStartTime"></span></p>
-                    <p><strong>End Time:</strong> <span id="eventDetailEndTime"></span></p>
-                    <p><strong>Facility:</strong> <span id="eventDetailFacility"></span></p>
-                    <p><strong>Description:</strong> <span id="eventDetailDescription"></span></p>
-                    <p><strong>Status:</strong> <span id="eventDetailStatus"></span></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
+
+<!-- Event Details Modal -->
+<div class="modal fade" id="eventDetailsModal" tabindex="-1" role="dialog" aria-labelledby="eventDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="eventDetailsModalLabel">Event Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Event Name:</strong> <span id="eventDetailName"></span></p>
+                <p><strong>Start Date:</strong> <span id="eventDetailStartDate"></span></p>
+                <p><strong>End Date:</strong> <span id="eventDetailEndDate"></span></p>
+                <p><strong>Start Time:</strong> <span id="eventDetailStartTime"></span></p>
+                <p><strong>End Time:</strong> <span id="eventDetailEndTime"></span></p>
+                <p><strong>Facility:</strong> <span id="eventDetailFacility"></span></p>
+                <p><strong>Description:</strong> <span id="eventDetailDescription"></span></p>
+                <p><strong>Status:</strong> <span id="eventDetailStatus"></span></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
+</div>
+
 
     <!-- FullCalendar JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-    <!-- Bootstrap JavaScript and dependencies (jQuery, Popper.js) -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('#bookingForm').on('submit', function(event) {
+        event.preventDefault(); // Prevent the default form submission
 
-    <script>
-        // FullCalendar Initialization
-        document.addEventListener('DOMContentLoaded', function() {
-            const calendarEl = document.getElementById('calendar');
-            const calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                events: [{
-                        title: 'Event 1',
-                        start: '2024-10-10',
-                        end: '2024-10-12',
-                        extendedProps: {
-                            status: 'Approved',
-                            facility: 'FUNCTION HALL',
-                            description: 'Description for Event 1'
-                        },
-                        color: getColorBasedOnStatus('Approved')
-                    },
-                    {
-                        title: 'Event 2',
-                        start: '2024-10-15',
-                        end: '2024-10-16',
-                        extendedProps: {
-                            status: 'Pending',
-                            facility: 'GYMNASIUM',
-                            description: 'Description for Event 2'
-                        },
-                        color: getColorBasedOnStatus('Pending')
-                    }
-                ],
-                eventClick: function(info) {
-                    // Show the event details in the modal
-                    $('#eventDetailName').text(info.event.title);
-                    $('#eventDetailStartDate').text(info.event.start.toLocaleDateString());
-                    $('#eventDetailEndDate').text(info.event.end ? info.event.end.toLocaleDateString() : 'N/A');
-                    $('#eventDetailStartTime').text(info.event.start.toLocaleTimeString());
-                    $('#eventDetailEndTime').text(info.event.end ? info.event.end.toLocaleTimeString() : 'N/A');
-                    $('#eventDetailFacility').text(info.event.extendedProps.facility);
-                    $('#eventDetailDescription').text(info.event.extendedProps.description);
-                    $('#eventDetailStatus').text(info.event.extendedProps.status);
+        var formData = new FormData(this); // Create a FormData object from the form
 
-                    // Open the modal
-                    $('#eventDetailsModal').modal('show');
+        $.ajax({
+            url: 'partials/book_event.php', // Replace with the path to your PHP file
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function(response) {
+                var result = JSON.parse(response);
+                if (result.status === 'success') {
+                    alert(result.message); // Handle success
+                    location.reload(); // Reload the page
+
+                } else {
+                    alert(result.message); // Handle error
                 }
-            });
-
-            function getColorBasedOnStatus(status) {
-                switch (status) {
-                    case 'Approved':
-                        return 'green';
-                    case 'Pending':
-                        return 'blue';
-                    case 'Rejected':
-                        return 'red';
-                    case 'On Hold':
-                        return 'orange';
-                    default:
-                        return 'gray';
-                }
+            },
+            error: function() {
+                alert('An error occurred. Please try again.'); // Handle AJAX error
             }
-
-            calendar.render();
-
-            // Filtering functionality
-            document.getElementById('facilityFilter').addEventListener('change', function() {
-                const selectedFacility = this.value;
-
-                // Re-fetch or filter events based on the selected facility
-                calendar.getEvents().forEach(event => {
-                    if (selectedFacility === 'all' || event.extendedProps.facility === selectedFacility) {
-                        event.setProp('display', 'auto'); // Show the event
-                    } else {
-                        event.setProp('display', 'none'); // Hide the event
-                    }
-                });
-            });
-
-            // Handle event link clicks to open the event details modal
-            $('.event-link').on('click', function() {
-                $('#eventDetailName').text($(this).data('event-name'));
-                $('#eventDetailStartDate').text($(this).data('start-date'));
-                $('#eventDetailEndDate').text($(this).data('end-date'));
-                $('#eventDetailStartTime').text($(this).data('start-time'));
-                $('#eventDetailEndTime').text($(this).data('end-time'));
-                $('#eventDetailFacility').text($(this).data('facility'));
-                $('#eventDetailDescription').text($(this).data('description'));
-                $('#eventDetailStatus').text($(this).data('status'));
-
-                $('#eventDetailsModal').modal('show');
-            });
         });
-    </script>
+    });
+});
+
+</script>
+<script>
+    // FullCalendar Initialization
+// FullCalendar Initialization
+document.addEventListener('DOMContentLoaded', function() {
+    const calendarEl = document.getElementById('calendar');
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        events: [], // Start with an empty events array
+
+        eventClick: function(info) {
+            // Show the event details in the modal
+            $('#eventDetailName').text(info.event.title);
+            $('#eventDetailStartDate').text(info.event.start.toLocaleDateString());
+            $('#eventDetailEndDate').text(info.event.end ? info.event.end.toLocaleDateString() : 'N/A');
+            $('#eventDetailStartTime').text(info.event.start.toLocaleTimeString());
+            $('#eventDetailEndTime').text(info.event.end ? info.event.end.toLocaleTimeString() : 'N/A');
+            $('#eventDetailFacility').text(info.event.extendedProps.facility);
+            $('#eventDetailDescription').text(info.event.extendedProps.description);
+            $('#eventDetailStatus').text(info.event.extendedProps.status);
+
+            // Open the modal
+            $('#eventDetailsModal').modal('show');
+        }
+    });
+
+    // Fetch events from the server
+    fetch('partials/fetch_events.php') // Create this file to fetch events
+        .then(response => response.json())
+        .then(events => {
+            events.forEach(event => {
+                // Calculate the correct end date
+                const endDate = new Date(event.end_date);
+                endDate.setDate(endDate.getDate() + 1); // Set end date to the next day
+
+                calendar.addEvent({
+                    title: event.event_name,
+                    start: event.start_date,
+                    end: endDate.toISOString().split('T')[0], // Convert back to YYYY-MM-DD
+                    extendedProps: {
+                        facility: event.facility,
+                        description: event.event_description,
+                        status: event.status
+                    },
+                    color: getColorBasedOnStatus(event.status) // Set the color based on status
+                });
+                $('#upcomingEventsBody').append(`
+                    <tr>
+                        <td><a href="#" class="event-link" data-event-name="${event.event_name}" data-start-date="${event.start_date}" data-end-date="${endDate.toISOString().split('T')[0]}" data-facility="${event.facility}" data-description="${event.event_description}" data-status="${event.status}">${event.event_name}</a></td>
+                        <td>${event.start_date}</td>
+                        <td>${endDate.toISOString().split('T')[0]}</td> <!-- Display end date -->
+                        <td><span class="legend-color status-${event.status.toLowerCase()}"></span>${event.status}</td>
+                    </tr>
+                `);
+            });
+            calendar.render(); // Render the calendar after events are added
+        });
+
+    function getColorBasedOnStatus(status) {
+        switch (status) {
+            case 'Approve':
+                return 'green'; // Approved
+            case 'Pending':
+                return 'blue'; // Pending
+            case 'Reject':
+                return 'red'; // Rejected
+            case 'On Hold':
+                return 'orange'; // On Hold
+            default:
+                return 'gray'; // Default color for any unknown status
+        }
+    }
+
+    // Filtering functionality
+    document.getElementById('facilityFilter').addEventListener('change', function() {
+        const selectedFacility = this.value;
+
+        // Re-fetch or filter events based on the selected facility
+        calendar.getEvents().forEach(event => {
+            if (selectedFacility === 'all' || event.extendedProps.facility === selectedFacility) {
+                event.setProp('display', 'auto'); // Show the event
+            } else {
+                event.setProp('display', 'none'); // Hide the event
+            }
+        });
+    });
+});
+
+</script>
+
 
 </body>
 
