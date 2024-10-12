@@ -191,3 +191,13 @@ CREATE TABLE office_events (
     status ENUM('Approve', 'Pending', 'Reject', 'On Hold') DEFAULT 'Pending', -- Status of the event
     FOREIGN KEY (user_id) REFERENCES users(id) -- Assuming 'users' table stores office users
 );
+CREATE TABLE event_reviews (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    event_id INT NOT NULL,
+    event_type ENUM('admin', 'student_leader', 'office') NOT NULL,
+    user_id INT NOT NULL,
+    comments TEXT,
+    options VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);

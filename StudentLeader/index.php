@@ -241,35 +241,41 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 2) {
 <body class="d-flexbox vw-100 vh-100">
 
     <!--HEADER-->        
-    <!-- First Navigation Bar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary-custom" id="mainNavbar">
-        <a class="navbar-brand" href="#">University of Rizal System - Morong Facilities E-Monitoring and Scheduling System</a>
+        <a class="navbar-brand" href="index.php">University of Rizal System - Morong Facilities E-Monitoring and Scheduling System</a>
 
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="true" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
+            <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse navbar-expand" id="navbarSupportedContent">
-        <ul class="ml-auto navbar-nav">
+            <ul class="ml-auto navbar-nav">
+                <li id="vbr" class="nav-item">
+                    <a class="nav-link rounded-pill" href="view_booking.php">
+                        <img src="Header_Images/vbr.png" alt="Icon" />
+                        View Booking Requests
+                    </a>
+                </li>
 
-            <li id="acc" class="nav-item dropdown">
-            <a class="nav-link rounded-pill dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <img src="Header_Images/account.png" alt="Icon"/>
-                    Account&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown" >
-                <a id="admin1" class="dropdown-item" href="Admin/Admin1.php" id="profileLink">
-                <img src="Header_Images/account.png" alt="Icon"/>
-                Profile</a>
               
-                <a id="signout" class="dropdown-item" href="../login.php"> 
-                <img src="Header_Images/sign_out.png" alt="Icon"/>
-                Log out</a>
-            </div>
-            
-            </li>
-            
-        </ul>
+                <li id="acc" class="nav-item dropdown">
+                    <a class="nav-link rounded-pill dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <img src="Header_Images/account.png" alt="Icon" />
+                        Account&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a id="admin1" class="dropdown-item" href="Profile.php" id="profileLink">
+                            <img src="Header_Images/account.png" alt="Icon" />
+                            Profile</a>
+                      
+                        <a id="signout" class="dropdown-item" href="../login.php">
+                            <img src="Header_Images/sign_out.png" alt="Icon" />
+                            Log out</a>
+                    </div>
+
+                </li>
+
+            </ul>
         </div>
     </nav>
     <h1>Welcome to Student Leader Dashboard, <?php echo $_SESSION['username']; ?>!</h1>
