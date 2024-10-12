@@ -251,18 +251,7 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 2) {
 
         <div class="collapse navbar-collapse navbar-expand" id="navbarSupportedContent">
         <ul class="ml-auto navbar-nav">
-            <li id="vbr" class="nav-item">
-                <a class="nav-link rounded-pill" href="View_Booking_Requests/view_booking_requests.php">
-                    <img src="Header_Images/vbr.png" alt="Icon"/>
-                    View Booking Requests
-                    </a>
-            </li>
-    
-            <li id="pbr" class="nav-item">
-            <a class="nav-link rounded-pill" href="Process_Booking_Request/process_booking_request.php">
-            <img src="Header_Images/pbr.png" alt="Icon"/>
-            Process Booking Requests</a>
-            </li>
+
             <li id="acc" class="nav-item dropdown">
             <a class="nav-link rounded-pill dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <img src="Header_Images/account.png" alt="Icon"/>
@@ -272,9 +261,7 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 2) {
                 <a id="admin1" class="dropdown-item" href="Admin/Admin1.php" id="profileLink">
                 <img src="Header_Images/account.png" alt="Icon"/>
                 Profile</a>
-                <a id="admin2" class="dropdown-item" href="Admin/Admin2.php">
-                <img src="Header_Images/switch_account.png" alt="Icon"/>
-                Switch to Admin Account</a>
+              
                 <a id="signout" class="dropdown-item" href="../login.php"> 
                 <img src="Header_Images/sign_out.png" alt="Icon"/>
                 Log out</a>

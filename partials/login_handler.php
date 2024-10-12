@@ -30,6 +30,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['account_type'] = $user['account_type_id'];
                 $_SESSION['admin_account_id'] = $user['admin_account_id'];  // Set this variable
+                
+                // Check if admin account is OSDS
+                $_SESSION['is_osds'] = ($user['admin_account_id'] == 3); // Assuming OSDS has ID 3
+                
                 header("Location: ../Admin/index.php");
                 exit();
             } elseif ($account_type == 2 && $user['department_id'] == $department && $user['org_id'] == $org) { // Student Leader
@@ -55,8 +59,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "No user found with this username and account type.";
     }
 
-
     $stmt->close();
 }
 
 $conn->close();
+?>
