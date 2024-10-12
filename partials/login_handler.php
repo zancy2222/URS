@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($result->num_rows == 1) {
         $user = $result->fetch_assoc();
-        
+
         // Verify password
         if (password_verify($password, $user['password'])) {
             // Check if the user's sub-account matches the login attempt
@@ -33,16 +33,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 header("Location: ../Admin/index.php");
                 exit();
             } elseif ($account_type == 2 && $user['department_id'] == $department && $user['org_id'] == $org) { // Student Leader
-                // Set session variables
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['account_type'] = $user['account_type_id'];
                 $_SESSION['sub_account'] = $user['org_id'];
+                $_SESSION['user_id'] = $user['id']; // Ensure user_id is set
                 header("Location: ../StudentLeader/index.php");
                 exit();
             } elseif ($account_type == 3 && $user['office_id'] == $office) { // Office
-                // Set session variables
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['account_type'] = $user['account_type_id'];
+                $_SESSION['user_id'] = $user['id']; // Set user ID for session
                 header("Location: ../Office/index.php");
                 exit();
             } else {
@@ -54,10 +54,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         echo "No user found with this username and account type.";
     }
-    
+
 
     $stmt->close();
 }
 
 $conn->close();
-?>

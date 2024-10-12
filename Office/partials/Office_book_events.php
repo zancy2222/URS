@@ -1,10 +1,16 @@
 <?php
 session_start();
-include 'db_conn.php';
+include 'db_conn.php'; // Adjust path as necessary
+
+// Check if the user is an office user
+if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 3) {
+    header("Location: ../login.php");
+    exit();
+}
 
 // Check if the form is submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = $_POST['email'];
+    $email = $_POST['email'];  // Capture email input
     $eventName = $_POST['eventName'];
     $startDate = $_POST['startDate'];
     $endDate = $_POST['endDate'];
@@ -23,27 +29,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $facilityFormRequestName = null;
     $contractOfLeaseName = null;
 
-    // Upload files if they are uploaded without errors
+    // Handle file uploads if files were uploaded without errors
     if ($letterOfRequest['error'] === UPLOAD_ERR_OK) {
         $letterOfRequestName = basename($letterOfRequest['name']);
-        move_uploaded_file($letterOfRequest['tmp_name'], 'uploads/' . $letterOfRequestName);
+        move_uploaded_file($letterOfRequest['tmp_name'], '../../partials/uploads/' . $letterOfRequestName);
     }
     if ($facilityFormRequest['error'] === UPLOAD_ERR_OK) {
         $facilityFormRequestName = basename($facilityFormRequest['name']);
-        move_uploaded_file($facilityFormRequest['tmp_name'], 'uploads/' . $facilityFormRequestName);
+        move_uploaded_file($facilityFormRequest['tmp_name'], '../../partials/uploads/' . $facilityFormRequestName);
     }
     if ($contractOfLease['error'] === UPLOAD_ERR_OK) {
         $contractOfLeaseName = basename($contractOfLease['name']);
-        move_uploaded_file($contractOfLease['tmp_name'], 'uploads/' . $contractOfLeaseName);
+        move_uploaded_file($contractOfLease['tmp_name'], '../../partials/uploads/' . $contractOfLeaseName);
     }
-
-    // Generate session id or use existing one
-    if (!isset($_SESSION['session_id'])) {
-        $_SESSION['session_id'] = uniqid('guest_', true); // Generates a unique session ID
-    }
-    $session_id = $_SESSION['session_id'];
-
-    // Check for date conflicts
 
     // Check for overlapping events across all tables
     $conflictQuery = "
@@ -75,19 +73,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit(); // Exit the script if a conflict is found
     }
 
-    // Prepare and bind for inserting event
-    $stmt = $conn->prepare("INSERT INTO guest_events (session_id, email, event_name, start_date, end_date, start_time, end_time, facility, event_description, letter_of_request, facility_form_request, contract_of_lease) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("ssssssssssss", $session_id, $email, $eventName, $startDate, $endDate, $startTime, $endTime, $facility, $eventDescription, $letterOfRequestName, $facilityFormRequestName, $contractOfLeaseName);
-    
+    // Prepare and bind the statement to insert the event data
+    $stmt = $conn->prepare("INSERT INTO office_events (user_id, email, event_name, start_date, end_date, start_time, end_time, facility, event_description, letter_of_request, facility_form_request, contract_of_lease) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+    // Fetch user_id from the session
+    $user_id = $_SESSION['user_id'];
+
+    // Bind the parameters to the prepared statement, using only the file names
+    $stmt->bind_param("isssssssssss", $user_id, $email, $eventName, $startDate, $endDate, $startTime, $endTime, $facility, $eventDescription, $letterOfRequestName, $facilityFormRequestName, $contractOfLeaseName);
+
+    // Execute the query and check if the event was created successfully
     if ($stmt->execute()) {
         echo json_encode(["status" => "success", "message" => "Event booked successfully!"]);
     } else {
         echo json_encode(["status" => "error", "message" => "Failed to book event: " . $stmt->error]);
     }
-    
-    $stmt->close();
-    $conflictCheck->close();
-}
 
-$conn->close();
-?>
+    // Close the statement and connection
+    $stmt->close();
+    $conn->close();
+}

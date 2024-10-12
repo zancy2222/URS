@@ -154,3 +154,40 @@ CREATE TABLE admin_events (
 -- Add status column to admin_events table
 ALTER TABLE admin_events 
 ADD COLUMN status ENUM('Approve', 'Pending', 'Reject', 'On Hold') DEFAULT 'Pending';
+
+CREATE TABLE student_leader_events (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    student_leader_id INT NOT NULL,
+    event_name VARCHAR(255) NOT NULL,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    start_time TIME NOT NULL,
+    end_time TIME NOT NULL,
+    facility VARCHAR(255) NOT NULL,
+    event_description TEXT,
+    letter_of_request VARCHAR(255),
+    facility_form_request VARCHAR(255),
+    contract_of_lease VARCHAR(255),
+    email VARCHAR(255),
+    status ENUM('Approve', 'Pending', 'Reject', 'On Hold') DEFAULT 'Pending',
+    FOREIGN KEY (student_leader_id) REFERENCES users(id) -- Assuming 'users' table stores leaders
+);
+
+
+CREATE TABLE office_events (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL, -- Foreign key referencing the user
+    email VARCHAR(255) NOT NULL,
+    event_name VARCHAR(255) NOT NULL,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    start_time TIME NOT NULL,
+    end_time TIME NOT NULL,
+    facility VARCHAR(255) NOT NULL,
+    event_description TEXT,
+    letter_of_request VARCHAR(255), -- To store filename for letter of request
+    facility_form_request VARCHAR(255), -- To store filename for facility form request
+    contract_of_lease VARCHAR(255), -- To store filename for contract of lease
+    status ENUM('Approve', 'Pending', 'Reject', 'On Hold') DEFAULT 'Pending', -- Status of the event
+    FOREIGN KEY (user_id) REFERENCES users(id) -- Assuming 'users' table stores office users
+);

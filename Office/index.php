@@ -457,7 +457,7 @@ $(document).ready(function() {
         var formData = new FormData(this); // Create a FormData object from the form
 
         $.ajax({
-            url: '../partials/book_event.php', // Replace with the path to your PHP file
+            url: 'partials/Office_book_events.php', // Replace with the path to your PHP file
             type: 'POST',
             data: formData,
             contentType: false,

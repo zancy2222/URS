@@ -29,41 +29,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $facilityFormRequest = $_FILES['facilityFormRequest'];
     $contractOfLease = $_FILES['contractOfLease'];
 
-    $letterOfRequestPath = null;
-    $facilityFormRequestPath = null;
-    $contractOfLeasePath = null;
+    // Store only the filenames
+    $letterOfRequestName = null;
+    $facilityFormRequestName = null;
+    $contractOfLeaseName = null;
 
     // Handle file uploads if files were uploaded without errors
     if ($letterOfRequest['error'] === UPLOAD_ERR_OK) {
-        $letterOfRequestPath = '../partials/uploads/' . basename($letterOfRequest['name']);
-        move_uploaded_file($letterOfRequest['tmp_name'], $letterOfRequestPath);
+        $letterOfRequestName = basename($letterOfRequest['name']);
+        move_uploaded_file($letterOfRequest['tmp_name'], '../../partials/uploads/' . $letterOfRequestName);
     }
     if ($facilityFormRequest['error'] === UPLOAD_ERR_OK) {
-        $facilityFormRequestPath = '../partials/uploads/' . basename($facilityFormRequest['name']);
-        move_uploaded_file($facilityFormRequest['tmp_name'], $facilityFormRequestPath);
+        $facilityFormRequestName = basename($facilityFormRequest['name']);
+        move_uploaded_file($facilityFormRequest['tmp_name'], '../../partials/uploads/' . $facilityFormRequestName);
     }
     if ($contractOfLease['error'] === UPLOAD_ERR_OK) {
-        $contractOfLeasePath = '../partials/uploads/' . basename($contractOfLease['name']);
-        move_uploaded_file($contractOfLease['tmp_name'], $contractOfLeasePath);
+        $contractOfLeaseName = basename($contractOfLease['name']);
+        move_uploaded_file($contractOfLease['tmp_name'], '../../partials/uploads/' . $contractOfLeaseName);
     }
 
     // Check for date conflicts
-    $conflictCheck = $conn->prepare("SELECT * FROM admin_events WHERE facility = ? AND (
+
+    // Check for overlapping events across all tables
+    $conflictQuery = "
+    SELECT * FROM (
+        SELECT facility, start_date, end_date, start_time, end_time FROM office_events
+        UNION ALL
+        SELECT facility, start_date, end_date, start_time, end_time FROM admin_events
+        UNION ALL
+        SELECT facility, start_date, end_date, start_time, end_time FROM student_leader_events
+        UNION ALL
+        SELECT facility, start_date, end_date, start_time, end_time FROM guest_events
+    ) AS all_events
+    WHERE facility = ? AND (
         (start_date <= ? AND end_date >= ?) OR 
         (start_date <= ? AND end_date >= ?) OR
         (start_date >= ? AND end_date <= ?)
-    )");
+    )
+";
 
-    // Bind parameters to check for conflicts in dates for the selected facility
+    // Prepare the statement
+    $conflictCheck = $conn->prepare($conflictQuery);
     $conflictCheck->bind_param("sssssss", $facility, $endDate, $startDate, $startDate, $endDate, $startDate, $endDate);
     $conflictCheck->execute();
     $result = $conflictCheck->get_result();
 
-    // If there is a date conflict, return an error message
+    // Check if any rows were returned (indicating a conflict)
     if ($result->num_rows > 0) {
         echo json_encode(["status" => "error", "message" => "Please choose different dates; the selected dates are already taken."]);
-        exit(); // Exit the script
+        exit(); // Exit the script if a conflict is found
     }
+
 
     // Prepare and bind the statement to insert the event data
     $stmt = $conn->prepare("INSERT INTO admin_events (admin_id, email, event_name, start_date, end_date, start_time, end_time, facility, event_description, letter_of_request, facility_form_request, contract_of_lease) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
@@ -71,8 +87,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Fetch admin_id from the session
     $admin_id = $_SESSION['admin_account_id'];
 
-    // Bind the parameters to the prepared statement
-    $stmt->bind_param("isssssssssss", $admin_id, $email, $eventName, $startDate, $endDate, $startTime, $endTime, $facility, $eventDescription, $letterOfRequestPath, $facilityFormRequestPath, $contractOfLeasePath);
+    // Bind the parameters to the prepared statement, using only the file names
+    $stmt->bind_param("isssssssssss", $admin_id, $email, $eventName, $startDate, $endDate, $startTime, $endTime, $facility, $eventDescription, $letterOfRequestName, $facilityFormRequestName, $contractOfLeaseName);
     
     // Execute the query and check if the event was created successfully
     if ($stmt->execute()) {

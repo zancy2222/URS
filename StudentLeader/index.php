@@ -293,7 +293,7 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 2) {
             <!-- Calendar Section (Left Column) -->
             <div class="col-md-6">
                 <!-- "Book an Event" Button -->
-                <button class="btn btn-primary mb-3" data-toggle="modal" data-target="#bookEventModal">Book an Event</button>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#studentLeaderBookEventModal">Book an Event</button>
 
 
 
@@ -345,18 +345,18 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 2) {
         </div>
     </div>
 
-<!-- Book Event Modal -->
-<div class="modal fade" id="bookEventModal" tabindex="-1" role="dialog" aria-labelledby="bookEventModalLabel" aria-hidden="true">
+<!-- Book Event Modal for Student Leader -->
+<div class="modal fade" id="studentLeaderBookEventModal" tabindex="-1" role="dialog" aria-labelledby="studentLeaderBookEventModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="bookEventModalLabel">Book an Event</h5>
+                <h5 class="modal-title" id="studentLeaderBookEventModalLabel">Create an Event</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <form id="bookingForm" enctype="multipart/form-data"> <!-- Add enctype for file uploads -->
+                <form id="studentLeaderBookingForm" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="email">Email Address</label>
                         <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
@@ -407,7 +407,7 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 2) {
                         <label for="contractOfLease">Contract of Lease (PDF)</label>
                         <input type="file" class="form-control" id="contractOfLease" name="contractOfLease" accept=".pdf">
                     </div>
-                    <button type="submit" class="btn btn-primary">Book</button>
+                    <button type="submit" class="btn btn-primary">Create Event</button>
                 </form>
             </div>
         </div>
@@ -450,36 +450,31 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 2) {
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <script>
-$(document).ready(function() {
-    $('#bookingForm').on('submit', function(event) {
-        event.preventDefault(); // Prevent the default form submission
-
-        var formData = new FormData(this); // Create a FormData object from the form
-
-        $.ajax({
-            url: '../partials/book_event.php', // Replace with the path to your PHP file
-            type: 'POST',
-            data: formData,
-            contentType: false,
-            processData: false,
-            success: function(response) {
-                var result = JSON.parse(response);
-                if (result.status === 'success') {
-                    alert(result.message); // Handle success
-                    location.reload(); // Reload the page
-
-                } else {
-                    alert(result.message); // Handle error
-                }
-            },
-            error: function() {
-                alert('An error occurred. Please try again.'); // Handle AJAX error
+$('#studentLeaderBookingForm').on('submit', function(event) {
+    event.preventDefault();
+    var formData = new FormData(this);
+    $.ajax({
+        url: 'partials/book_student_event.php', // Create this file for student leader booking
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function(response) {
+            var result = JSON.parse(response);
+            if (result.status === 'success') {
+                alert(result.message);
+                location.reload();
+            } else {
+                alert(result.message);
             }
-        });
+        },
+        error: function() {
+            alert('An error occurred. Please try again.');
+        }
     });
 });
-
 </script>
+
 <script>
     // FullCalendar Initialization
 // FullCalendar Initialization

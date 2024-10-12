@@ -2,8 +2,19 @@
 session_start();
 include 'db_conn.php';
 
+// Check if the user is logged in and is a student leader
+if (!isset($_SESSION['user_id'])) {
+    die("User is not logged in.");
+}
+
+// Check if the user_id is set
+if (!isset($_SESSION['user_id'])) {
+    die("User ID is not set in the session.");
+}
+
 // Check if the form is submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Capture form inputs
     $email = $_POST['email'];
     $eventName = $_POST['eventName'];
     $startDate = $_POST['startDate'];
@@ -18,32 +29,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $facilityFormRequest = $_FILES['facilityFormRequest'];
     $contractOfLease = $_FILES['contractOfLease'];
 
-    // Store only the filenames
     $letterOfRequestName = null;
     $facilityFormRequestName = null;
     $contractOfLeaseName = null;
 
-    // Upload files if they are uploaded without errors
+    // Handle file uploads if files were uploaded without errors
     if ($letterOfRequest['error'] === UPLOAD_ERR_OK) {
+        // Store only the file name
         $letterOfRequestName = basename($letterOfRequest['name']);
-        move_uploaded_file($letterOfRequest['tmp_name'], 'uploads/' . $letterOfRequestName);
+        move_uploaded_file($letterOfRequest['tmp_name'], '../../partials/uploads/' . $letterOfRequestName);
     }
     if ($facilityFormRequest['error'] === UPLOAD_ERR_OK) {
+        // Store only the file name
         $facilityFormRequestName = basename($facilityFormRequest['name']);
-        move_uploaded_file($facilityFormRequest['tmp_name'], 'uploads/' . $facilityFormRequestName);
+        move_uploaded_file($facilityFormRequest['tmp_name'], '../../partials/uploads/' . $facilityFormRequestName);
     }
     if ($contractOfLease['error'] === UPLOAD_ERR_OK) {
+        // Store only the file name
         $contractOfLeaseName = basename($contractOfLease['name']);
-        move_uploaded_file($contractOfLease['tmp_name'], 'uploads/' . $contractOfLeaseName);
+        move_uploaded_file($contractOfLease['tmp_name'], '../../partials/uploads/' . $contractOfLeaseName);
     }
-
-    // Generate session id or use existing one
-    if (!isset($_SESSION['session_id'])) {
-        $_SESSION['session_id'] = uniqid('guest_', true); // Generates a unique session ID
-    }
-    $session_id = $_SESSION['session_id'];
-
-    // Check for date conflicts
 
     // Check for overlapping events across all tables
     $conflictQuery = "
@@ -75,16 +80,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit(); // Exit the script if a conflict is found
     }
 
-    // Prepare and bind for inserting event
-    $stmt = $conn->prepare("INSERT INTO guest_events (session_id, email, event_name, start_date, end_date, start_time, end_time, facility, event_description, letter_of_request, facility_form_request, contract_of_lease) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("ssssssssssss", $session_id, $email, $eventName, $startDate, $endDate, $startTime, $endTime, $facility, $eventDescription, $letterOfRequestName, $facilityFormRequestName, $contractOfLeaseName);
+
+    // Prepare and bind the statement to insert the event data
+    $stmt = $conn->prepare("INSERT INTO student_leader_events (student_leader_id, email, event_name, start_date, end_date, start_time, end_time, facility, event_description, letter_of_request, facility_form_request, contract_of_lease, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending')");
+
+    // Fetch student leader ID from the session
+    $studentLeaderId = $_SESSION['user_id'];
+
+    // Bind the parameters to the prepared statement
+    $stmt->bind_param("isssssssssss", $studentLeaderId, $email, $eventName, $startDate, $endDate, $startTime, $endTime, $facility, $eventDescription, $letterOfRequestName, $facilityFormRequestName, $contractOfLeaseName);
     
+    // Execute the query and check if the event was created successfully
     if ($stmt->execute()) {
-        echo json_encode(["status" => "success", "message" => "Event booked successfully!"]);
+        echo json_encode(["status" => "success", "message" => "Event created successfully!"]);
     } else {
-        echo json_encode(["status" => "error", "message" => "Failed to book event: " . $stmt->error]);
+        echo json_encode(["status" => "error", "message" => "Failed to create event: " . $stmt->error]);
     }
     
+    // Close the statement and conflict check
     $stmt->close();
     $conflictCheck->close();
 }
