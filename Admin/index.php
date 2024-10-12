@@ -346,19 +346,20 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 1) {
     </div>
 
 <!-- Book Event Modal -->
+<!-- Book Event Modal for Admin -->
 <div class="modal fade" id="bookEventModal" tabindex="-1" role="dialog" aria-labelledby="bookEventModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="bookEventModalLabel">Book an Event</h5>
+                <h5 class="modal-title" id="bookEventModalLabel">Create an Event</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <form id="bookingForm" enctype="multipart/form-data"> <!-- Add enctype for file uploads -->
+                <form id="adminBookingForm" enctype="multipart/form-data">
                     <div class="form-group">
-                        <label for="email">Email Address</label>
+                        <label for="email">Email Address</label>  <!-- New email input field -->
                         <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
                     </div>
                     <div class="form-group">
@@ -407,13 +408,12 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 1) {
                         <label for="contractOfLease">Contract of Lease (PDF)</label>
                         <input type="file" class="form-control" id="contractOfLease" name="contractOfLease" accept=".pdf">
                     </div>
-                    <button type="submit" class="btn btn-primary">Book</button>
+                    <button type="submit" class="btn btn-primary">Create Event</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
-
 
 <!-- Event Details Modal -->
 <div class="modal fade" id="eventDetailsModal" tabindex="-1" role="dialog" aria-labelledby="eventDetailsModalLabel" aria-hidden="true">
@@ -450,39 +450,33 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 1) {
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <script>
-$(document).ready(function() {
-    $('#bookingForm').on('submit', function(event) {
-        event.preventDefault(); // Prevent the default form submission
-
-        var formData = new FormData(this); // Create a FormData object from the form
-
-        $.ajax({
-            url: '../partials/book_event.php', // Replace with the path to your PHP file
-            type: 'POST',
-            data: formData,
-            contentType: false,
-            processData: false,
-            success: function(response) {
-                var result = JSON.parse(response);
-                if (result.status === 'success') {
-                    alert(result.message); // Handle success
-                    location.reload(); // Reload the page
-
-                } else {
-                    alert(result.message); // Handle error
-                }
-            },
-            error: function() {
-                alert('An error occurred. Please try again.'); // Handle AJAX error
+$('#adminBookingForm').on('submit', function(event) {
+    event.preventDefault();
+    var formData = new FormData(this);
+    $.ajax({
+        url: 'partials/book_event.php',
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function(response) {
+            var result = JSON.parse(response);
+            if (result.status === 'success') {
+                alert(result.message);
+                location.reload();
+            } else {
+                alert(result.message);
             }
-        });
+        },
+        error: function() {
+            alert('An error occurred. Please try again.');
+        }
     });
 });
 
 </script>
 <script>
-    // FullCalendar Initialization
-// FullCalendar Initialization
+   
 document.addEventListener('DOMContentLoaded', function() {
     const calendarEl = document.getElementById('calendar');
     const calendar = new FullCalendar.Calendar(calendarEl, {

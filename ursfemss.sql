@@ -132,3 +132,25 @@ CREATE TABLE users (
     FOREIGN KEY (org_id) REFERENCES org(id),
     FOREIGN KEY (office_id) REFERENCES office(id)
 );
+
+-- Create the `admin_events` table
+CREATE TABLE admin_events (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    admin_id INT NOT NULL,
+    event_name VARCHAR(255) NOT NULL,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    start_time TIME NOT NULL,
+    end_time TIME NOT NULL,
+    facility VARCHAR(255) NOT NULL,
+    event_description TEXT,
+    letter_of_request VARCHAR(255),
+    facility_form_request VARCHAR(255),
+    contract_of_lease VARCHAR(255),
+    email VARCHAR(255),
+    FOREIGN KEY (admin_id) REFERENCES admin_account(id)
+);
+
+-- Add status column to admin_events table
+ALTER TABLE admin_events 
+ADD COLUMN status ENUM('Approve', 'Pending', 'Reject', 'On Hold') DEFAULT 'Pending';
