@@ -1,17 +1,15 @@
-<?php
+<?php 
 session_start();
 include 'partials/db_conn.php'; // Ensure connection to the database
 
-if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 1) {
+if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 2) {
     header("Location: login.php");
     exit();
 }
 
-// Get the logged-in user's details
 $username = $_SESSION['username'];
-$query = "SELECT u.username, u.password, at.account_type, u.admin_account_id, u.department_id, u.org_id, u.office_id
+$query = "SELECT u.id, u.username, u.account_type_id 
           FROM users u
-          JOIN account_type at ON u.account_type_id = at.id
           WHERE u.username = ?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param('s', $username);
@@ -25,69 +23,53 @@ if ($result->num_rows > 0) {
     exit();
 }
 
-// Get current file paths before form submission
-$current_event_query = "SELECT letter_of_request, facility_form_request, contract_of_lease FROM admin_events WHERE admin_id = ?";
+// Get current file paths for student leader events
+$current_event_query = "SELECT letter_of_request, facility_form_request, contract_of_lease 
+                        FROM student_leader_events WHERE student_leader_id = ?";
 $current_stmt = $conn->prepare($current_event_query);
-$current_stmt->bind_param('i', $user['admin_account_id']);
+$current_stmt->bind_param('i', $user['id']);
 $current_stmt->execute();
 $current_result = $current_stmt->get_result();
 $current_files = $current_result->fetch_assoc();
 
-// Handle form submission for updating profile information
+// Handle form submission for updating documents
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // File uploads
-    $uploads_dir = '../partials/uploads/'; // Set the directory for file uploads
-
-    // Prepare file variables to only save filenames
+    $uploads_dir = '../partials/uploads/';
+    
     $letter_of_request = $_FILES['letter_of_request']['name'] ? basename($_FILES['letter_of_request']['name']) : $current_files['letter_of_request'];
     $facility_form_request = $_FILES['facility_form_request']['name'] ? basename($_FILES['facility_form_request']['name']) : $current_files['facility_form_request'];
-    $contract_of_lease = $_FILES['contract_of_lease']['name'] ? basename($_FILES['contract_of_lease']['name']) : $current_files['contract_of_lease']; // Change default to current value
+    $contract_of_lease = $_FILES['contract_of_lease']['name'] ? basename($_FILES['contract_of_lease']['name']) : $current_files['contract_of_lease'];
 
-    // Move uploaded files
-    $upload_success = true; // Flag to check if all uploads are successful
-    if ($_FILES['letter_of_request']['name']) {
-        if (!move_uploaded_file($_FILES['letter_of_request']['tmp_name'], $uploads_dir . $letter_of_request)) {
-            echo "Error uploading Letter of Request.";
-            $upload_success = false;
-        }
-    }
-    if ($_FILES['facility_form_request']['name']) {
-        if (!move_uploaded_file($_FILES['facility_form_request']['tmp_name'], $uploads_dir . $facility_form_request)) {
-            echo "Error uploading Facility Form Request.";
-            $upload_success = false;
-        }
-    }
-    if ($_FILES['contract_of_lease']['name']) {
-        if (!move_uploaded_file($_FILES['contract_of_lease']['tmp_name'], $uploads_dir . $contract_of_lease)) {
-            echo "Error uploading Contract of Lease.";
-            $upload_success = false;
+    $upload_success = true;
+    
+    // File upload logic
+    foreach (['letter_of_request', 'facility_form_request', 'contract_of_lease'] as $file) {
+        if ($_FILES[$file]['name']) {
+            if (!move_uploaded_file($_FILES[$file]['tmp_name'], $uploads_dir . ${$file})) {
+                echo "Error uploading " . ucfirst(str_replace('_', ' ', $file)) . ".";
+                $upload_success = false;
+            }
         }
     }
 
-    // Proceed if all uploads were successful
     if ($upload_success) {
-        // Get the admin's ID
-        $admin_id = $user['admin_account_id']; // Assuming this is the ID you need
-
-        // Prepare the event update query
-        $event_update_query = "UPDATE admin_events 
+        $event_update_query = "UPDATE student_leader_events 
                                SET letter_of_request = ?, facility_form_request = ?, contract_of_lease = ?
-                               WHERE admin_id = ?";
+                               WHERE student_leader_id = ?";
         $stmt = $conn->prepare($event_update_query);
         $stmt->bind_param('sssi', 
             $letter_of_request, 
             $facility_form_request, 
             $contract_of_lease, 
-            $admin_id
+            $user['id']
         );
 
-        // Execute the update and check for errors
         if ($stmt->execute()) {
-            echo "Profile updated successfully!";
+            echo "Documents updated successfully!";
             header("Location: Profile.php");
             exit();
         } else {
-            echo "Failed to update profile. Error: " . $stmt->error;
+            echo "Failed to update documents. Error: " . $stmt->error;
         }
     }
 }
@@ -422,12 +404,6 @@ button.btn-primary:hover {
         </a>
     </li>
 
-    <li id="pbr" class="nav-item">
-        <a class="nav-link rounded-pill" href="Process_booking.php">
-            <img src="Header_Images/pbr.png" alt="Icon" />
-            Process Booking Requests
-        </a>
-    </li>
 <?php endif; ?>
 
                 <li id="acc" class="nav-item dropdown">
@@ -439,12 +415,7 @@ button.btn-primary:hover {
                         <a id="admin1" class="dropdown-item" href="Profile.php" id="profileLink">
                             <img src="Header_Images/account.png" alt="Icon" />
                             Profile</a>
-                        <?php if (isset($_SESSION['is_osds']) && $_SESSION['is_osds']): ?>
-                            <a id="admin2" class="dropdown-item" href="Accounts.php">
-                                <img src="Header_Images/switch_account.png" alt="Icon" />
-                                Switch to Admin Account
-                            </a>
-                        <?php endif; ?>
+                      
 
                         <a id="signout" class="dropdown-item" href="../login.php">
                             <img src="Header_Images/sign_out.png" alt="Icon" />
@@ -458,22 +429,20 @@ button.btn-primary:hover {
     </nav>
     <div class="container">
     <h1>Upload Documents</h1>
-    <form method="POST" action="Profile.php" id="profileForm" enctype="multipart/form-data">
-        <input type="hidden" name="event_id" value="<?php echo $event_id; ?>"> <!-- Include hidden event ID -->
-
+    <form method="POST" action="" enctype="multipart/form-data">
         <div class="form-group">
             <label for="letter_of_request">Letter of Request</label>
-            <input type="file" class="form-control" id="letter_of_request" name="letter_of_request" >
+            <input type="file" class="form-control" id="letter_of_request" name="letter_of_request">
         </div>
 
         <div class="form-group">
             <label for="facility_form_request">Facility Form Request</label>
-            <input type="file" class="form-control" id="facility_form_request" name="facility_form_request" >
+            <input type="file" class="form-control" id="facility_form_request" name="facility_form_request">
         </div>
 
         <div class="form-group">
             <label for="contract_of_lease">Contract of Lease</label>
-            <input type="file" class="form-control" id="contract_of_lease" name="contract_of_lease" >
+            <input type="file" class="form-control" id="contract_of_lease" name="contract_of_lease">
         </div>
 
         <button type="submit" class="btn btn-primary">Update Documents</button>

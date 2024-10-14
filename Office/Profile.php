@@ -1,15 +1,16 @@
-<?php
+<?php 
 session_start();
 include 'partials/db_conn.php'; // Ensure connection to the database
 
-if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 1) {
+// Change account_type from 2 (admin) to 3 (office)
+if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 3) {
     header("Location: login.php");
     exit();
 }
 
 // Get the logged-in user's details
 $username = $_SESSION['username'];
-$query = "SELECT u.username, u.password, at.account_type, u.admin_account_id, u.department_id, u.org_id, u.office_id
+$query = "SELECT u.username, u.password, at.account_type, u.office_id
           FROM users u
           JOIN account_type at ON u.account_type_id = at.id
           WHERE u.username = ?";
@@ -26,9 +27,9 @@ if ($result->num_rows > 0) {
 }
 
 // Get current file paths before form submission
-$current_event_query = "SELECT letter_of_request, facility_form_request, contract_of_lease FROM admin_events WHERE admin_id = ?";
+$current_event_query = "SELECT letter_of_request, facility_form_request, contract_of_lease FROM office_events WHERE user_id = ?";
 $current_stmt = $conn->prepare($current_event_query);
-$current_stmt->bind_param('i', $user['admin_account_id']);
+$current_stmt->bind_param('i', $user['office_id']); // Change admin_account_id to office_id
 $current_stmt->execute();
 $current_result = $current_stmt->get_result();
 $current_files = $current_result->fetch_assoc();
@@ -66,19 +67,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Proceed if all uploads were successful
     if ($upload_success) {
-        // Get the admin's ID
-        $admin_id = $user['admin_account_id']; // Assuming this is the ID you need
+        // Get the office user's ID
+        $office_id = $user['office_id']; // Change admin_id to office_id
 
         // Prepare the event update query
-        $event_update_query = "UPDATE admin_events 
+        $event_update_query = "UPDATE office_events 
                                SET letter_of_request = ?, facility_form_request = ?, contract_of_lease = ?
-                               WHERE admin_id = ?";
+                               WHERE user_id = ?";
         $stmt = $conn->prepare($event_update_query);
-        $stmt->bind_param('sssi', 
+        $stmt->bind_param('ssii', 
             $letter_of_request, 
             $facility_form_request, 
             $contract_of_lease, 
-            $admin_id
+            $office_id // Change admin_id to office_id
         );
 
         // Execute the update and check for errors
@@ -92,7 +93,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -422,12 +422,6 @@ button.btn-primary:hover {
         </a>
     </li>
 
-    <li id="pbr" class="nav-item">
-        <a class="nav-link rounded-pill" href="Process_booking.php">
-            <img src="Header_Images/pbr.png" alt="Icon" />
-            Process Booking Requests
-        </a>
-    </li>
 <?php endif; ?>
 
                 <li id="acc" class="nav-item dropdown">
@@ -439,12 +433,11 @@ button.btn-primary:hover {
                         <a id="admin1" class="dropdown-item" href="Profile.php" id="profileLink">
                             <img src="Header_Images/account.png" alt="Icon" />
                             Profile</a>
-                        <?php if (isset($_SESSION['is_osds']) && $_SESSION['is_osds']): ?>
+                            
                             <a id="admin2" class="dropdown-item" href="Accounts.php">
                                 <img src="Header_Images/switch_account.png" alt="Icon" />
                                 Switch to Admin Account
                             </a>
-                        <?php endif; ?>
 
                         <a id="signout" class="dropdown-item" href="../login.php">
                             <img src="Header_Images/sign_out.png" alt="Icon" />
@@ -456,11 +449,10 @@ button.btn-primary:hover {
             </ul>
         </div>
     </nav>
-    <div class="container">
+   
+<div class="container">
     <h1>Upload Documents</h1>
     <form method="POST" action="Profile.php" id="profileForm" enctype="multipart/form-data">
-        <input type="hidden" name="event_id" value="<?php echo $event_id; ?>"> <!-- Include hidden event ID -->
-
         <div class="form-group">
             <label for="letter_of_request">Letter of Request</label>
             <input type="file" class="form-control" id="letter_of_request" name="letter_of_request" >

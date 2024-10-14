@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 1) {
+if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 2) {
     header("Location: ../login.php");
     exit();
 }
@@ -238,41 +238,6 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 1) {
                 /* Smaller font on mobile */
             }
         }
-
-        /* Style the table and make it responsive */
-        .table td {
-            vertical-align: middle;
-        }
-
-        .table td button {
-            margin-bottom: 5px;
-            /* Add spacing between buttons */
-        }
-
-        .table td .btn-sm {
-            width: 100%;
-            /* Ensure buttons take full width within their cell */
-            min-width: 120px;
-            /* Optional: Set a minimum width for buttons */
-        }
-
-        /* Make buttons stack vertically on smaller screens */
-        @media (max-width: 768px) {
-            .table td {
-                display: flex;
-                flex-wrap: wrap;
-                /* Allow buttons to wrap */
-                gap: 5px;
-                /* Space between buttons */
-            }
-
-            .table td .btn-sm {
-                width: auto;
-                /* Reset to default for smaller screens */
-                flex: 1;
-                /* Flex-grow to use available space */
-            }
-        }
     </style>
 
 
@@ -291,21 +256,15 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 1) {
 
         <div class="collapse navbar-collapse navbar-expand" id="navbarSupportedContent">
             <ul class="ml-auto navbar-nav">
-                <?php if (!isset($_SESSION['is_osds']) || !$_SESSION['is_osds']): ?>
-                    <li id="vbr" class="nav-item">
-                        <a class="nav-link rounded-pill" href="view_booking.php">
-                            <img src="Header_Images/vbr.png" alt="Icon" />
-                            View Booking Requests
-                        </a>
-                    </li>
+            <?php if (!isset($_SESSION['is_osds']) || !$_SESSION['is_osds']): ?>
+    <li id="vbr" class="nav-item">
+        <a class="nav-link rounded-pill" href="view_booking.php">
+            <img src="Header_Images/vbr.png" alt="Icon" />
+            View Booking Requests
+        </a>
+    </li>
 
-                    <li id="pbr" class="nav-item">
-                        <a class="nav-link rounded-pill" href="Process_booking.php">
-                            <img src="Header_Images/pbr.png" alt="Icon" />
-                            Process Booking Requests
-                        </a>
-                    </li>
-                <?php endif; ?>
+<?php endif; ?>
 
                 <li id="acc" class="nav-item dropdown">
                     <a class="nav-link rounded-pill dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -397,76 +356,11 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 1) {
                             <td><?php echo !empty($row['event_description']) ? $row['event_description'] : 'N/A'; ?></td>
                             <td>
                                 <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#viewModal<?php echo $row['id']; ?>">View</button>
-                                <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editModal<?php echo $row['id']; ?>">Update</button>
-                                <!-- <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal<?php echo $row['id']; ?>">Delete</button> -->
-                                <button class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#reviewModal<?php echo $row['id']; ?>">Review Form</button>
+                                <!-- <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editModal<?php echo $row['id']; ?>">Update</button>
+                                <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal<?php echo $row['id']; ?>">Delete</button> -->
                             </td>
                         </tr>
 
-                           <!-- Review Form Modal -->
-                    <div class="modal fade" id="reviewModal<?php echo $row['id']; ?>" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="reviewModalLabel">Review Form for <?php echo $row['event_name']; ?></h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <form action="partials/submit_review.php" method="POST">
-                                    <div class="modal-body">
-                                        <input type="hidden" name="event_id" value="<?php echo $row['id']; ?>">
-                                        <input type="hidden" name="user_id" value="<?php echo $_SESSION['admin_account_id']; ?>"> <!-- Assuming you store user ID in session -->
-
-                                        <div class="form-group">
-                                            <label for="status">Status</label>
-                                            <input type="text" class="form-control" name="status" value="<?php echo $row['status']; ?>" readonly disabled>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="event_name">Event Name</label>
-                                            <input type="text" class="form-control" name="event_name" value="<?php echo $row['event_name']; ?>" readonly disabled>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="options">Options</label>
-                                            <div>
-                                                <div class="form-check">
-                                                    <input type="checkbox" class="form-check-input" name="options[]" value="Change Data" id="option1">
-                                                    <label class="form-check-label" for="option1">Change Data</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input type="checkbox" class="form-check-input" name="options[]" value="Change Time" id="option2">
-                                                    <label class="form-check-label" for="option2">Change Time</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input type="checkbox" class="form-check-input" name="options[]" value="Resubmit Proposal" id="option3">
-                                                    <label class="form-check-label" for="option3">Resubmit Proposal</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input type="checkbox" class="form-check-input" name="options[]" value="Resubmit Student Activity Form" id="option4">
-                                                    <label class="form-check-label" for="option4">Resubmit Student Activity Form</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input type="checkbox" class="form-check-input" name="options[]" value="Resubmit Facility Request Form" id="option5">
-                                                    <label class="form-check-label" for="option5">Resubmit Facility Request Form</label>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="comments">Other Comments</label>
-                                            <textarea class="form-control" name="comments" rows="3"></textarea>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-primary">Submit Review</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
                         <!-- View Modal -->
                         <div class="modal fade" id="viewModal<?php echo $row['id']; ?>" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
                             <div class="modal-dialog">

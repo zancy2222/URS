@@ -269,12 +269,15 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 3) {
                         Account&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a id="admin1" class="dropdown-item" href="Admin/Admin1.php" id="profileLink">
+                        <a id="admin1" class="dropdown-item" href="Profile.php" id="profileLink">
                             <img src="Header_Images/account.png" alt="Icon" />
                             Profile</a>
-                        <a id="admin2" class="dropdown-item" href="Admin/Admin2.php">
-                            <img src="Header_Images/switch_account.png" alt="Icon" />
-                            Switch to Admin Account</a>
+                            
+                            <a id="admin2" class="dropdown-item" href="Accounts.php">
+                                <img src="Header_Images/switch_account.png" alt="Icon" />
+                                Switch to Admin Account
+                            </a>
+
                         <a id="signout" class="dropdown-item" href="../login.php">
                             <img src="Header_Images/sign_out.png" alt="Icon" />
                             Log out</a>
