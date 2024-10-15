@@ -278,8 +278,7 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 2) {
             </ul>
         </div>
     </nav>
-    <h1>Welcome to Student Leader Dashboard, <?php echo $_SESSION['username']; ?>!</h1>
-
+ 
     <div class="container mt-4">
         <!-- Grid for Calendar and Upcoming Events -->
         <div class="row">

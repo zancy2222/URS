@@ -396,7 +396,6 @@ button.btn-primary:hover {
 
         <div class="collapse navbar-collapse navbar-expand" id="navbarSupportedContent">
             <ul class="ml-auto navbar-nav">
-            <?php if (!isset($_SESSION['is_osds']) || !$_SESSION['is_osds']): ?>
     <li id="vbr" class="nav-item">
         <a class="nav-link rounded-pill" href="view_booking.php">
             <img src="Header_Images/vbr.png" alt="Icon" />
@@ -404,7 +403,7 @@ button.btn-primary:hover {
         </a>
     </li>
 
-<?php endif; ?>
+
 
                 <li id="acc" class="nav-item dropdown">
                     <a class="nav-link rounded-pill dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

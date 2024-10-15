@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 2) {
+if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 3) {
     header("Location: ../login.php");
     exit();
 }
@@ -256,14 +256,13 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 2) {
 
         <div class="collapse navbar-collapse navbar-expand" id="navbarSupportedContent">
             <ul class="ml-auto navbar-nav">
-     <li id="vbr" class="nav-item">
-        <a class="nav-link rounded-pill" href="view_booking.php">
-            <img src="Header_Images/vbr.png" alt="Icon" />
-            View Booking Requests
-        </a>
-    </li>
+            <li id="vbr" class="nav-item">
+                    <a class="nav-link rounded-pill" href="view_booking.php">
+                        <img src="Header_Images/vbr.png" alt="Icon" />
+                        View Booking Requests
+                    </a>
+                </li>
 
- 
                 <li id="acc" class="nav-item dropdown">
                     <a class="nav-link rounded-pill dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <img src="Header_Images/account.png" alt="Icon" />
@@ -273,8 +272,11 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 2) {
                         <a id="admin1" class="dropdown-item" href="Profile.php" id="profileLink">
                             <img src="Header_Images/account.png" alt="Icon" />
                             Profile</a>
-                       
-
+                             <a id="admin2" class="dropdown-item" href="Accounts.php">
+                                <img src="Header_Images/switch_account.png" alt="Icon" />
+                                Switch to Admin Account
+                            </a>
+ 
                         <a id="signout" class="dropdown-item" href="../login.php">
                             <img src="Header_Images/sign_out.png" alt="Icon" />
                             Log out</a>

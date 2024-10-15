@@ -257,7 +257,7 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 3) {
         <div class="collapse navbar-collapse navbar-expand" id="navbarSupportedContent">
             <ul class="ml-auto navbar-nav">
                 <li id="vbr" class="nav-item">
-                    <a class="nav-link rounded-pill" href="View_Booking_Requests/view_booking_requests.php">
+                    <a class="nav-link rounded-pill" href="view_booking.php">
                         <img src="Header_Images/vbr.png" alt="Icon" />
                         View Booking Requests
                     </a>
@@ -288,8 +288,7 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 3) {
             </ul>
         </div>
     </nav>
-    <h1>Welcome to Office Dashboard, <?php echo $_SESSION['username']; ?>!</h1>
-
+ 
     <div class="container mt-4">
         <!-- Grid for Calendar and Upcoming Events -->
         <div class="row">
