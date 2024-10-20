@@ -1,4 +1,4 @@
-<?php
+<?php 
 include 'partials/db_conn.php';
 
 // Handle form submission
@@ -14,6 +14,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Check if the username already exists for the selected account type
     $check_sql = "SELECT * FROM users WHERE username = ? AND account_type_id = ?";
     $check_stmt = $conn->prepare($check_sql);
+    
+    if ($check_stmt === false) {
+        die("Error preparing statement: " . $conn->error); // Handle error
+    }
+
     $check_stmt->bind_param('si', $username, $account_type);
     $check_stmt->execute();
     $check_result = $check_stmt->get_result();
@@ -25,18 +30,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $sql = "INSERT INTO users (username, password, account_type_id, admin_account_id, department_id, org_id, office_id) 
                 VALUES (?, ?, ?, ?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
+        
+        if ($stmt === false) {
+            die("Error preparing statement: " . $conn->error); // Handle error
+        }
+
         $stmt->bind_param('ssiiiii', $username, $password, $account_type, $admin_account, $department, $org, $office);
 
         if ($stmt->execute()) {
             header("Location: Accounts.php");
-        exit();
+            exit();
         } else {
             echo "Error: " . $stmt->error;
         }
+
+        $stmt->close();
     }
 
     $check_stmt->close();
-    $stmt->close();
 }
 
 $conn->close();
