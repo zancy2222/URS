@@ -15,6 +15,7 @@ if (!isset($_SESSION['user_id'])) {
 // Check if the form is submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Capture form inputs
+    $orgName = $_POST['orgName']; // New organization name input
     $email = $_POST['email'];
     $eventName = $_POST['eventName'];
     $startDate = $_POST['startDate'];
@@ -82,13 +83,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
     // Prepare and bind the statement to insert the event data
-    $stmt = $conn->prepare("INSERT INTO student_leader_events (student_leader_id, email, event_name, start_date, end_date, start_time, end_time, facility, event_description, letter_of_request, facility_form_request, contract_of_lease, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending')");
+    $stmt = $conn->prepare("INSERT INTO student_leader_events (student_leader_id, org_name, email, event_name, start_date, end_date, start_time, end_time, facility, event_description, letter_of_request, facility_form_request, contract_of_lease, created_at, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), 'Pending')");
 
     // Fetch student leader ID from the session
     $studentLeaderId = $_SESSION['user_id'];
 
     // Bind the parameters to the prepared statement
-    $stmt->bind_param("isssssssssss", $studentLeaderId, $email, $eventName, $startDate, $endDate, $startTime, $endTime, $facility, $eventDescription, $letterOfRequestName, $facilityFormRequestName, $contractOfLeaseName);
+    $stmt->bind_param("issssssssssss", $studentLeaderId, $orgName, $email, $eventName, $startDate, $endDate, $startTime, $endTime, $facility, $eventDescription, $letterOfRequestName, $facilityFormRequestName, $contractOfLeaseName);
     
     // Execute the query and check if the event was created successfully
     if ($stmt->execute()) {

@@ -395,6 +395,49 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 1) {
             </form>
         </div>
     </div>
+
+<!-- Bootstrap Modal for Success -->
+<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="successModalLabel">Registration Successful</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Your account has been successfully registered.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap Modal for Error -->
+<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="errorModalLabel">Registration Error</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <?php echo $_SESSION['registration_error']; ?>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
 </div>
 
     <!-- FullCalendar JavaScript -->
@@ -468,6 +511,27 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 1) {
             });
         });
     </script>
+
+<script>
+// Check if the session has a success or error message and show the modal
+<?php if (isset($_SESSION['registration_success']) && $_SESSION['registration_success']): ?>
+    $(document).ready(function() {
+        // Show the success modal
+        $('#successModal').modal('show');
+    });
+    // Unset the session variable so that the modal does not show again on refresh
+    <?php unset($_SESSION['registration_success']); ?>
+<?php endif; ?>
+
+<?php if (isset($_SESSION['registration_error'])): ?>
+    $(document).ready(function() {
+        // Show the error modal
+        $('#errorModal').modal('show');
+    });
+    // Unset the session variable so that the modal does not show again on refresh
+    <?php unset($_SESSION['registration_error']); ?>
+<?php endif; ?>
+</script>
 
 </body>
 </html>

@@ -1,9 +1,24 @@
 <?php
 session_start();
+include 'partials/db_conn.php';
 
-if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 2) {
-    header("Location: ../login.php");
+if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 2) { // Ensure user is a Student Leader
+    header("Location: login.php");
     exit();
+}
+
+$orgName = '';
+if (isset($_SESSION['org_id'])) {
+    $org_id = $_SESSION['org_id']; // Get the org ID from the session
+
+    // Fetch organization name based on org_id
+    $query = "SELECT org_name FROM org WHERE id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $org_id);
+    $stmt->execute();
+    $stmt->bind_result($orgName);
+    $stmt->fetch();
+    $stmt->close();
 }
 ?>
 <!DOCTYPE html>
@@ -349,6 +364,10 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 2) {
             </div>
             <div class="modal-body">
                 <form id="studentLeaderBookingForm" enctype="multipart/form-data">
+                <div class="form-group">
+        <label for="orgName">Organization Name</label>
+        <input type="text" class="form-control" id="orgName" name="orgName" value="<?php echo htmlspecialchars($orgName); ?>" readonly>
+    </div>
                     <div class="form-group">
                         <label for="email">Email Address</label>
                         <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
@@ -388,7 +407,7 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 2) {
                         <textarea class="form-control" id="eventDescription" name="eventDescription" rows="3" placeholder="Enter event description"></textarea>
                     </div>
                     <div class="form-group">
-                        <label for="letterOfRequest">Letter of Request (PDF)</label>
+                        <label for="letterOfRequest">Proposal (PDF)</label>
                         <input type="file" class="form-control" id="letterOfRequest" name="letterOfRequest" accept=".pdf">
                     </div>
                     <div class="form-group">
@@ -396,7 +415,7 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 2) {
                         <input type="file" class="form-control" id="facilityFormRequest" name="facilityFormRequest" accept=".pdf">
                     </div>
                     <div class="form-group">
-                        <label for="contractOfLease">Contract of Lease (PDF)</label>
+                        <label for="contractOfLease">Student Activity Form (PDF)</label>
                         <input type="file" class="form-control" id="contractOfLease" name="contractOfLease" accept=".pdf">
                     </div>
                     <button type="submit" class="btn btn-primary">Create Event</button>
@@ -468,16 +487,14 @@ $('#studentLeaderBookingForm').on('submit', function(event) {
 </script>
 
 <script>
-    // FullCalendar Initialization
-// FullCalendar Initialization
 document.addEventListener('DOMContentLoaded', function() {
     const calendarEl = document.getElementById('calendar');
     const calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
-        events: [], // Start with an empty events array
+        events: [],
 
         eventClick: function(info) {
-            // Show the event details in the modal
+            // Show the event details in the modal for calendar events
             $('#eventDetailName').text(info.event.title);
             $('#eventDetailStartDate').text(info.event.start.toLocaleDateString());
             $('#eventDetailEndDate').text(info.event.end ? info.event.end.toLocaleDateString() : 'N/A');
@@ -493,65 +510,122 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Fetch events from the server
-    fetch('../partials/fetch_events.php') // Create this file to fetch events
+    fetch('../partials/fetch_events.php')
         .then(response => response.json())
         .then(events => {
             events.forEach(event => {
-                // Calculate the correct end date
                 const endDate = new Date(event.end_date);
-                endDate.setDate(endDate.getDate() + 1); // Set end date to the next day
+                endDate.setDate(endDate.getDate());
 
                 calendar.addEvent({
                     title: event.event_name,
-                    start: event.start_date,
-                    end: endDate.toISOString().split('T')[0], // Convert back to YYYY-MM-DD
+                    start: `${event.start_date}T${event.start_time}`, // Include the time
+                    end: `${event.end_date}T${event.end_time}`, // Include the time
                     extendedProps: {
                         facility: event.facility,
                         description: event.event_description,
                         status: event.status
                     },
-                    color: getColorBasedOnStatus(event.status) // Set the color based on status
+                    color: getColorBasedOnStatus(event.status)
                 });
-                $('#upcomingEventsBody').append(`
-                    <tr>
-                        <td><a href="#" class="event-link" data-event-name="${event.event_name}" data-start-date="${event.start_date}" data-end-date="${endDate.toISOString().split('T')[0]}" data-facility="${event.facility}" data-description="${event.event_description}" data-status="${event.status}">${event.event_name}</a></td>
-                        <td>${event.start_date}</td>
-                        <td>${endDate.toISOString().split('T')[0]}</td> <!-- Display end date -->
-                        <td><span class="legend-color status-${event.status.toLowerCase()}"></span>${event.status}</td>
-                    </tr>
-                `);
+
+                // Populate upcoming events table
+// Populate upcoming events table
+$('#upcomingEventsBody').append(`
+    <tr>
+        <td><a href="#" class="event-link" 
+            data-event-name="${event.event_name}" 
+            data-start-date="${event.start_date}" 
+            data-start-time="${event.start_time}" 
+            data-end-date="${endDate.toISOString().split('T')[0]}" 
+            data-end-time="${event.end_time}" 
+            data-facility="${event.facility}" 
+            data-description="${event.event_description}" 
+            data-status="${event.status}">
+            ${event.event_name}</a>
+        </td>
+        <td>${event.start_date}</td>
+        <td>${endDate.toISOString().split('T')[0]}</td>
+        <td><span class="legend-color status-${event.status.toLowerCase()}"></span>${event.status}</td>
+    </tr>
+`);
+
             });
-            calendar.render(); // Render the calendar after events are added
+            calendar.render();
         });
 
     function getColorBasedOnStatus(status) {
         switch (status) {
             case 'Approve':
-                return 'green'; // Approved
+                return 'green';
             case 'Pending':
-                return 'blue'; // Pending
+                return 'blue';
             case 'Reject':
-                return 'red'; // Rejected
+                return 'red';
             case 'On Hold':
-                return 'orange'; // On Hold
+                return 'orange';
             default:
-                return 'gray'; // Default color for any unknown status
+                return 'gray';
         }
     }
 
-    // Filtering functionality
+    // Facility filter
     document.getElementById('facilityFilter').addEventListener('change', function() {
         const selectedFacility = this.value;
 
-        // Re-fetch or filter events based on the selected facility
         calendar.getEvents().forEach(event => {
             if (selectedFacility === 'all' || event.extendedProps.facility === selectedFacility) {
-                event.setProp('display', 'auto'); // Show the event
+                event.setProp('display', 'auto');
             } else {
-                event.setProp('display', 'none'); // Hide the event
+                event.setProp('display', 'none');
             }
         });
     });
+
+// Helper function to format time to 12-hour format
+function formatTimeTo12Hour(time) {
+    const [hours, minutes] = time.split(':');
+    let hours12 = parseInt(hours, 10);
+    const ampm = hours12 >= 12 ? 'PM' : 'AM';
+
+    if (hours12 > 12) {
+        hours12 -= 12;
+    } else if (hours12 === 0) {
+        hours12 = 12; // Convert 0 to 12 for midnight
+    }
+
+    return `${hours12}:${minutes} ${ampm}`;
+}
+
+// Add click event listener for event links in the upcoming events table
+document.getElementById('upcomingEventsBody').addEventListener('click', function(event) {
+    if (event.target.classList.contains('event-link')) {
+        event.preventDefault();
+
+        const eventName = event.target.getAttribute('data-event-name');
+        const startDate = event.target.getAttribute('data-start-date');
+        const startTime = event.target.getAttribute('data-start-time');
+        const endDate = event.target.getAttribute('data-end-date');
+        const endTime = event.target.getAttribute('data-end-time');
+        const facility = event.target.getAttribute('data-facility');
+        const description = event.target.getAttribute('data-description');
+        const status = event.target.getAttribute('data-status');
+
+        // Populate the modal with event details
+        $('#eventDetailName').text(eventName);
+        $('#eventDetailStartDate').text(startDate);
+        $('#eventDetailStartTime').text(formatTimeTo12Hour(startTime)); // Convert to 12-hour format
+        $('#eventDetailEndDate').text(endDate);
+        $('#eventDetailEndTime').text(formatTimeTo12Hour(endTime)); // Convert to 12-hour format
+        $('#eventDetailFacility').text(facility);
+        $('#eventDetailDescription').text(description);
+        $('#eventDetailStatus').text(status);
+
+        // Show the modal
+        $('#eventDetailsModal').modal('show');
+    }
+});
+
 });
 
 </script>

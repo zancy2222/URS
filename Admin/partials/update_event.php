@@ -1,5 +1,5 @@
-<?php 
-include 'db_conn.php'; // Ensure you have the database connection
+<?php
+include 'db_conn.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
@@ -11,39 +11,42 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Sanitize and get the POST data
     $event_id = intval($_POST['event_id']);
     $status = $_POST['status'];
+    $event_type = $_POST['event_type']; // Get event type from form
 
-    // Update query for guest_events
-    $sql = "UPDATE guest_events SET status = ? WHERE id = ?";
+    // Determine which table to update based on the event type
+    switch ($event_type) {
+        case 'guest':
+            $table = 'guest_events';
+            break;
+        case 'admin':
+            $table = 'admin_events';
+            break;
+        case 'student_leader':
+            $table = 'student_leader_events';
+            break;
+        case 'office':
+            $table = 'office_events';
+            break;
+        default:
+            // Invalid event type
+            die('Invalid event type.');
+    }
+
+    // Update query for the correct table
+    $sql = "UPDATE $table SET status = ? WHERE id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param('si', $status, $event_id);
 
     if ($stmt->execute()) {
-        // Update other event tables
-        $tables = ['admin_events', 'student_leader_events', 'office_events'];
-        foreach ($tables as $table) {
-            $sql = "UPDATE $table SET status = ? WHERE id = ?";
-            $stmt = $conn->prepare($sql);
-            $stmt->bind_param('si', $status, $event_id);
-            $stmt->execute();
-        }
-
-        // Fetch emails for notifications
+        // Fetch the email for notifications
+        $emailQuery = "SELECT email FROM $table WHERE id = ?";
+        $stmt = $conn->prepare($emailQuery);
+        $stmt->bind_param('i', $event_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
         $emails = [];
-        $emailQueries = [
-            "SELECT email FROM guest_events WHERE id = ?",
-            "SELECT email FROM admin_events WHERE id = ?",
-            "SELECT email FROM student_leader_events WHERE id = ?",
-            "SELECT email FROM office_events WHERE id = ?"
-        ];
-        
-        foreach ($emailQueries as $query) {
-            $stmt = $conn->prepare($query);
-            $stmt->bind_param('i', $event_id);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            while ($row = $result->fetch_assoc()) {
-                $emails[] = $row['email'];
-            }
+        while ($row = $result->fetch_assoc()) {
+            $emails[] = $row['email'];
         }
 
         // Send email notification

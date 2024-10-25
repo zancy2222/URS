@@ -153,7 +153,10 @@ CREATE TABLE admin_events (
 
 -- Add status column to admin_events table
 ALTER TABLE admin_events 
-ADD COLUMN status ENUM('Approve', 'Pending', 'Reject', 'On Hold') DEFAULT 'Pending';
+ADD COLUMN status ENUM('Approve', 'Pending', 'Reject', 'On Hold') DEFAULT 'Pending',
+ADD COLUMN account_name VARCHAR(100) NOT NULL, 
+ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+
 
 CREATE TABLE student_leader_events (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -172,6 +175,9 @@ CREATE TABLE student_leader_events (
     status ENUM('Approve', 'Pending', 'Reject', 'On Hold') DEFAULT 'Pending',
     FOREIGN KEY (student_leader_id) REFERENCES users(id) -- Assuming 'users' table stores leaders
 );
+ALTER TABLE student_leader_events 
+ADD COLUMN org_name VARCHAR(100) NOT NULL, 
+ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
 
 
 CREATE TABLE office_events (
@@ -191,6 +197,11 @@ CREATE TABLE office_events (
     status ENUM('Approve', 'Pending', 'Reject', 'On Hold') DEFAULT 'Pending', -- Status of the event
     FOREIGN KEY (user_id) REFERENCES users(id) -- Assuming 'users' table stores office users
 );
+ALTER TABLE office_events 
+ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ADD COLUMN office_name VARCHAR(100) NOT NULL;
+
+
 CREATE TABLE event_reviews (
     id INT AUTO_INCREMENT PRIMARY KEY,
     event_id INT NOT NULL,

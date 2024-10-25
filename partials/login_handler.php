@@ -30,37 +30,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['account_type'] = $user['account_type_id'];
                 $_SESSION['admin_account_id'] = $user['admin_account_id'];  // Set this variable
-                
+
                 // Check if admin account is OSDS
                 $_SESSION['is_osds'] = ($user['admin_account_id'] == 3); // Assuming OSDS has ID 3
-                
+
                 header("Location: ../Admin/index.php");
                 exit();
             } elseif ($account_type == 2 && $user['department_id'] == $department && $user['org_id'] == $org) { // Student Leader
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['account_type'] = $user['account_type_id'];
                 $_SESSION['sub_account'] = $user['org_id'];
+                $_SESSION['org_id'] = $user['org_id']; // Store org ID for later use
                 $_SESSION['user_id'] = $user['id']; // Ensure user_id is set
                 header("Location: ../StudentLeader/index.php");
                 exit();
             } elseif ($account_type == 3 && $user['office_id'] == $office) { // Office
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['account_type'] = $user['account_type_id'];
+                $_SESSION['office_id'] = $user['office_id'];
                 $_SESSION['user_id'] = $user['id']; // Set user ID for session
                 header("Location: ../Office/index.php");
                 exit();
             } else {
-                echo "User account does not match the specified criteria.";
+                echo "<script>alert('User account does not match the specified criteria.'); window.location.href = '../login.php';</script>";
+                exit();
             }
         } else {
-            echo "Invalid password.";
+            echo "<script>alert('Invalid password.'); window.location.href = '../login.php';</script>";
+            exit();
         }
     } else {
-        echo "No user found with this username and account type.";
+        echo "<script>alert('No user found with this username and account type.'); window.location.href = '../login.php';</script>";
+        exit();
     }
 
     $stmt->close();
 }
 
 $conn->close();
-?>

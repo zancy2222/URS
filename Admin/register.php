@@ -1,5 +1,7 @@
-<?php 
+<?php
 include 'partials/db_conn.php';
+
+session_start(); // Start the session to store success/error status
 
 // Handle form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -24,7 +26,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $check_result = $check_stmt->get_result();
 
     if ($check_result->num_rows > 0) {
-        echo "Username already exists for this account type.";
+        $_SESSION['registration_error'] = "Username already exists for this account type.";
+        header("Location: Accounts.php"); // Redirect to the same page to show the modal
+        exit();
     } else {
         // Insert user into the `users` table
         $sql = "INSERT INTO users (username, password, account_type_id, admin_account_id, department_id, org_id, office_id) 
@@ -38,7 +42,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bind_param('ssiiiii', $username, $password, $account_type, $admin_account, $department, $org, $office);
 
         if ($stmt->execute()) {
-            header("Location: Accounts.php");
+            $_SESSION['registration_success'] = true; // Set success flag in session
+            header("Location: Accounts.php"); // Redirect to the same page to show the success modal
             exit();
         } else {
             echo "Error: " . $stmt->error;

@@ -13,6 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $user_id = $_POST['user_id'];
     $comments = $_POST['comments'];
     $options = isset($_POST['options']) ? implode(',', $_POST['options']) : '';
+    $status = $_POST['status']; // Get the status from the form
 
     // Determine event type based on the event_id
     $checkQuery = "
@@ -58,44 +59,55 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $emailRow = $emailResult->fetch_assoc();
             $recipientEmail = $emailRow['email']; // Get the recipient email
 
-            // Insert review into the event_reviews table
-            $insertQuery = "INSERT INTO event_reviews (event_id, event_type, user_id, comments, options) VALUES (?, ?, ?, ?, ?)";
-            $insertStmt = $conn->prepare($insertQuery);
-            $insertStmt->bind_param("issss", $event_id, $event_type, $user_id, $comments, $options);
+            // Start transaction
+            $conn->begin_transaction();
 
-            if ($insertStmt->execute()) {
+            try {
+                // Insert review into the event_reviews table
+                $insertQuery = "INSERT INTO event_reviews (event_id, event_type, user_id, comments, options) VALUES (?, ?, ?, ?, ?)";
+                $insertStmt = $conn->prepare($insertQuery);
+                $insertStmt->bind_param("issss", $event_id, $event_type, $user_id, $comments, $options);
+                $insertStmt->execute();
+
+                // Update the event status in the corresponding table
+                // Update the event status in the corresponding table
+                $updateQuery = "UPDATE {$event_type}_events SET status = ? WHERE id = ?";
+                $updateStmt = $conn->prepare($updateQuery);
+                $updateStmt->bind_param("si", $status, $event_id);
+                $updateStmt->execute();
+
+                // Commit the transaction
+                $conn->commit();
+
                 // Prepare to send email notification
                 $mail = new PHPMailer(true);
-                try {
-                    $mail->isSMTP();
-                    $mail->Host = 'smtp.gmail.com';
-                    $mail->SMTPAuth = true;
-                    $mail->Username = 'danielzanbaltazar.forwork@gmail.com';
-                    $mail->Password = 'nqzk mmww mxin ikve'; 
-                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                    $mail->Port = 587;
+                $mail->isSMTP();
+                $mail->Host = 'smtp.gmail.com';
+                $mail->SMTPAuth = true;
+                $mail->Username = 'danielzanbaltazar.forwork@gmail.com';
+                $mail->Password = 'nqzk mmww mxin ikve';
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                $mail->Port = 587;
 
-                    // Recipients
-                    $mail->setFrom('danielzanbaltazar.forwork@gmail.com', 'Event Review');
-                    $mail->addAddress($recipientEmail); // Send to the event's associated email
+                // Recipients
+                $mail->setFrom('danielzanbaltazar.forwork@gmail.com', 'Event Review');
+                $mail->addAddress($recipientEmail); // Send to the event's associated email
 
-                    // Content
-                    $mail->isHTML(true);
-                    $mail->Subject = 'New Event Review Submitted';
-                    $mail->Body = "A new review has been submitted for event ID: $event_id.<br>
-                                   User ID: $user_id.<br>
-                                   Comments: $comments.<br>
-                                   Options: $options.";
+                // Content
+                $mail->isHTML(true);
+                $mail->Subject = 'New Event Review Submitted';
+                $mail->Body = "A new review has been submitted for event ID: $event_id.<br>
+                               User ID: $user_id.<br>
+                               Comments: $comments.<br>
+                               Options: $options.<br>
+                               The event status has been updated to: <strong>$status</strong>.";
 
-                    $mail->send();
-                    echo 'Review submitted and notification sent.';
-                } catch (Exception $e) {
-                    echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
-                }
-            } else {
-                echo 'Error: ' . $insertStmt->error;
+                $mail->send();
+                echo 'Review submitted and notification sent.';
+            } catch (Exception $e) {
+                $conn->rollback(); // Rollback the transaction if something fails
+                echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
             }
-            $insertStmt->close();
         } else {
             echo "No email address found for the specified event.";
         }
@@ -107,8 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt->close();
     $conn->close();
 
-    // Redirect to booking events page
-    header("Location: ../Process_booking.php");
+    // Redirect or show a success message
+    header('Location: ../Process_booking.php?success=Review submitted and email notification sent.');
     exit();
 }
-?>

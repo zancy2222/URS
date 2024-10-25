@@ -96,10 +96,13 @@
     </style>
 </head>
 <body>
-    <div class="header">
+<div class="header">
+    <a href="index.php" style="color:#000;">
         <h1>University of Rizal System - Morong</h1>
         <h2>Facilities E-Monitoring and Scheduling System</h2>
-    </div>
+    </a>
+</div>
+
 
     <form id="loginForm" action="partials/login_handler.php" method="POST">
     <div class="container">
@@ -153,6 +156,7 @@
     </div>
     </div>
     </form>
+    
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>

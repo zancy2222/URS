@@ -18,6 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $endTime = $_POST['endTime'];
     $facility = $_POST['facility'];
     $eventDescription = $_POST['eventDescription'];
+    $officeName = $_POST['officeName']; // Ensure this variable is defined
 
     // File upload handling
     $letterOfRequest = $_FILES['letterOfRequest'];
@@ -74,13 +75,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Prepare and bind the statement to insert the event data
-    $stmt = $conn->prepare("INSERT INTO office_events (user_id, email, event_name, start_date, end_date, start_time, end_time, facility, event_description, letter_of_request, facility_form_request, contract_of_lease) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO office_events (user_id, email, event_name, start_date, end_date, start_time, end_time, facility, event_description, letter_of_request, facility_form_request, contract_of_lease, office_name) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
     // Fetch user_id from the session
     $user_id = $_SESSION['user_id'];
 
     // Bind the parameters to the prepared statement, using only the file names
-    $stmt->bind_param("isssssssssss", $user_id, $email, $eventName, $startDate, $endDate, $startTime, $endTime, $facility, $eventDescription, $letterOfRequestName, $facilityFormRequestName, $contractOfLeaseName);
+    $stmt->bind_param("issssssssssss", $user_id, $email, $eventName, $startDate, $endDate, $startTime, $endTime, $facility, $eventDescription, $letterOfRequestName, $facilityFormRequestName, $contractOfLeaseName, $officeName);
 
     // Execute the query and check if the event was created successfully
     if ($stmt->execute()) {

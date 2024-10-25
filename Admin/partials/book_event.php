@@ -23,6 +23,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $endTime = $_POST['endTime'];
     $facility = $_POST['facility'];
     $eventDescription = $_POST['eventDescription'];
+    $accountName = $_POST['accountName']; // Get account name from form
+
 
     // File upload handling
     $letterOfRequest = $_FILES['letterOfRequest'];
@@ -82,13 +84,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
     // Prepare and bind the statement to insert the event data
-    $stmt = $conn->prepare("INSERT INTO admin_events (admin_id, email, event_name, start_date, end_date, start_time, end_time, facility, event_description, letter_of_request, facility_form_request, contract_of_lease) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO admin_events (admin_id, account_name, email, event_name, start_date, end_date, start_time, end_time, facility, event_description, letter_of_request, facility_form_request, contract_of_lease, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
 
     // Fetch admin_id from the session
     $admin_id = $_SESSION['admin_account_id'];
 
     // Bind the parameters to the prepared statement, using only the file names
-    $stmt->bind_param("isssssssssss", $admin_id, $email, $eventName, $startDate, $endDate, $startTime, $endTime, $facility, $eventDescription, $letterOfRequestName, $facilityFormRequestName, $contractOfLeaseName);
+    $stmt->bind_param("issssssssssss", $admin_id, $accountName, $email, $eventName, $startDate, $endDate, $startTime, $endTime, $facility, $eventDescription, $letterOfRequestName, $facilityFormRequestName, $contractOfLeaseName);
     
     // Execute the query and check if the event was created successfully
     if ($stmt->execute()) {
