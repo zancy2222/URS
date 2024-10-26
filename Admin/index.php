@@ -271,21 +271,21 @@ if (isset($_SESSION['admin_account_id'])) {
 
         <div class="collapse navbar-collapse navbar-expand" id="navbarSupportedContent">
             <ul class="ml-auto navbar-nav">
-            <?php if (!isset($_SESSION['is_osds']) || !$_SESSION['is_osds']): ?>
-    <li id="vbr" class="nav-item">
-        <a class="nav-link rounded-pill" href="view_booking.php">
-            <img src="Header_Images/vbr.png" alt="Icon" />
-            View Booking Requests
-        </a>
-    </li>
+                <?php if (!isset($_SESSION['is_osds']) || !$_SESSION['is_osds']): ?>
+                    <li id="vbr" class="nav-item">
+                        <a class="nav-link rounded-pill" href="view_booking.php">
+                            <img src="Header_Images/vbr.png" alt="Icon" />
+                            View Booking Requests
+                        </a>
+                    </li>
 
-    <li id="pbr" class="nav-item">
-        <a class="nav-link rounded-pill" href="Process_booking.php">
-            <img src="Header_Images/pbr.png" alt="Icon" />
-            Process Booking Requests
-        </a>
-    </li>
-<?php endif; ?>
+                    <li id="pbr" class="nav-item">
+                        <a class="nav-link rounded-pill" href="Process_booking.php">
+                            <img src="Header_Images/pbr.png" alt="Icon" />
+                            Process Booking Requests
+                        </a>
+                    </li>
+                <?php endif; ?>
 
                 <li id="acc" class="nav-item dropdown">
                     <a class="nav-link rounded-pill dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -320,12 +320,12 @@ if (isset($_SESSION['admin_account_id'])) {
         <div class="row">
             <!-- Calendar Section (Left Column) -->
             <div class="col-md-6">
-            <?php if (!isset($_SESSION['is_osds']) || !$_SESSION['is_osds']): ?>
-    <!-- "Book an Event" Button -->
-    <button class="btn btn-primary mb-3" data-toggle="modal" data-target="#bookEventModal">Book an Event</button>
+                <?php if (!isset($_SESSION['is_osds']) || !$_SESSION['is_osds']): ?>
+                    <!-- "Book an Event" Button -->
+                    <button class="btn btn-primary mb-3" data-toggle="modal" data-target="#bookEventModal">Book an Event</button>
 
-    <div id="calendar"></div>
-<?php endif; ?>
+                    <div id="calendar"></div>
+                <?php endif; ?>
 
 
                 <!-- Legends Section -->
@@ -387,10 +387,10 @@ if (isset($_SESSION['admin_account_id'])) {
                 </div>
                 <div class="modal-body">
                     <form id="adminBookingForm" enctype="multipart/form-data">
-                    <div class="form-group">
-    <label for="accountName">Account Name</label>
-    <input type="text" class="form-control" id="accountName" name="accountName" value="<?php echo $adminAccountName; ?>" readonly>
-</div>
+                        <div class="form-group">
+                            <label for="accountName">Account Name</label>
+                            <input type="text" class="form-control" id="accountName" name="accountName" value="<?php echo $adminAccountName; ?>" readonly>
+                        </div>
                         <div class="form-group">
                             <label for="email">Email Address</label> <!-- New email input field -->
                             <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
@@ -507,7 +507,7 @@ if (isset($_SESSION['admin_account_id'])) {
             });
         });
     </script>
-<script>
+    <script>
 document.addEventListener('DOMContentLoaded', function() {
     const calendarEl = document.getElementById('calendar');
     const calendar = new FullCalendar.Calendar(calendarEl, {
@@ -538,6 +538,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const endDate = new Date(event.end_date);
                 endDate.setDate(endDate.getDate());
 
+                // Add all events to the calendar
                 calendar.addEvent({
                     title: event.event_name,
                     start: `${event.start_date}T${event.start_time}`, // Include the time
@@ -550,27 +551,27 @@ document.addEventListener('DOMContentLoaded', function() {
                     color: getColorBasedOnStatus(event.status)
                 });
 
-                // Populate upcoming events table
-// Populate upcoming events table
-$('#upcomingEventsBody').append(`
-    <tr>
-        <td><a href="#" class="event-link" 
-            data-event-name="${event.event_name}" 
-            data-start-date="${event.start_date}" 
-            data-start-time="${event.start_time}" 
-            data-end-date="${endDate.toISOString().split('T')[0]}" 
-            data-end-time="${event.end_time}" 
-            data-facility="${event.facility}" 
-            data-description="${event.event_description}" 
-            data-status="${event.status}">
-            ${event.event_name}</a>
-        </td>
-        <td>${event.start_date}</td>
-        <td>${endDate.toISOString().split('T')[0]}</td>
-        <td><span class="legend-color status-${event.status.toLowerCase()}"></span>${event.status}</td>
-    </tr>
-`);
-
+                // Only populate the upcoming events table if status is "Approve"
+                if (event.status === 'Approve') {
+                    $('#upcomingEventsBody').append(`
+                        <tr>
+                            <td><a href="#" class="event-link" 
+                                data-event-name="${event.event_name}" 
+                                data-start-date="${event.start_date}" 
+                                data-start-time="${event.start_time}" 
+                                data-end-date="${endDate.toISOString().split('T')[0]}" 
+                                data-end-time="${event.end_time}" 
+                                data-facility="${event.facility}" 
+                                data-description="${event.event_description}" 
+                                data-status="${event.status}">
+                                ${event.event_name}</a>
+                            </td>
+                            <td>${event.start_date}</td>
+                            <td>${endDate.toISOString().split('T')[0]}</td>
+                            <td><span class="legend-color status-${event.status.toLowerCase()}"></span>${event.status}</td>
+                        </tr>
+                    `);
+                }
             });
             calendar.render();
         });
@@ -603,53 +604,53 @@ $('#upcomingEventsBody').append(`
         });
     });
 
-// Helper function to format time to 12-hour format
-function formatTimeTo12Hour(time) {
-    const [hours, minutes] = time.split(':');
-    let hours12 = parseInt(hours, 10);
-    const ampm = hours12 >= 12 ? 'PM' : 'AM';
+    // Helper function to format time to 12-hour format
+    function formatTimeTo12Hour(time) {
+        const [hours, minutes] = time.split(':');
+        let hours12 = parseInt(hours, 10);
+        const ampm = hours12 >= 12 ? 'PM' : 'AM';
 
-    if (hours12 > 12) {
-        hours12 -= 12;
-    } else if (hours12 === 0) {
-        hours12 = 12; // Convert 0 to 12 for midnight
+        if (hours12 > 12) {
+            hours12 -= 12;
+        } else if (hours12 === 0) {
+            hours12 = 12; // Convert 0 to 12 for midnight
+        }
+
+        return `${hours12}:${minutes} ${ampm}`;
     }
 
-    return `${hours12}:${minutes} ${ampm}`;
-}
+    // Add click event listener for event links in the upcoming events table
+    document.getElementById('upcomingEventsBody').addEventListener('click', function(event) {
+        if (event.target.classList.contains('event-link')) {
+            event.preventDefault();
 
-// Add click event listener for event links in the upcoming events table
-document.getElementById('upcomingEventsBody').addEventListener('click', function(event) {
-    if (event.target.classList.contains('event-link')) {
-        event.preventDefault();
+            const eventName = event.target.getAttribute('data-event-name');
+            const startDate = event.target.getAttribute('data-start-date');
+            const startTime = event.target.getAttribute('data-start-time');
+            const endDate = event.target.getAttribute('data-end-date');
+            const endTime = event.target.getAttribute('data-end-time');
+            const facility = event.target.getAttribute('data-facility');
+            const description = event.target.getAttribute('data-description');
+            const status = event.target.getAttribute('data-status');
 
-        const eventName = event.target.getAttribute('data-event-name');
-        const startDate = event.target.getAttribute('data-start-date');
-        const startTime = event.target.getAttribute('data-start-time');
-        const endDate = event.target.getAttribute('data-end-date');
-        const endTime = event.target.getAttribute('data-end-time');
-        const facility = event.target.getAttribute('data-facility');
-        const description = event.target.getAttribute('data-description');
-        const status = event.target.getAttribute('data-status');
+            // Populate the modal with event details
+            $('#eventDetailName').text(eventName);
+            $('#eventDetailStartDate').text(startDate);
+            $('#eventDetailStartTime').text(formatTimeTo12Hour(startTime)); // Convert to 12-hour format
+            $('#eventDetailEndDate').text(endDate);
+            $('#eventDetailEndTime').text(formatTimeTo12Hour(endTime)); // Convert to 12-hour format
+            $('#eventDetailFacility').text(facility);
+            $('#eventDetailDescription').text(description);
+            $('#eventDetailStatus').text(status);
 
-        // Populate the modal with event details
-        $('#eventDetailName').text(eventName);
-        $('#eventDetailStartDate').text(startDate);
-        $('#eventDetailStartTime').text(formatTimeTo12Hour(startTime)); // Convert to 12-hour format
-        $('#eventDetailEndDate').text(endDate);
-        $('#eventDetailEndTime').text(formatTimeTo12Hour(endTime)); // Convert to 12-hour format
-        $('#eventDetailFacility').text(facility);
-        $('#eventDetailDescription').text(description);
-        $('#eventDetailStatus').text(status);
-
-        // Show the modal
-        $('#eventDetailsModal').modal('show');
-    }
-});
+            // Show the modal
+            $('#eventDetailsModal').modal('show');
+        }
+    });
 
 });
 
-</script>
+    </script>
 
 
 </body>

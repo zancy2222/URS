@@ -509,7 +509,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Fetch events from the server
     fetch('../partials/fetch_events.php')
         .then(response => response.json())
         .then(events => {
@@ -517,6 +516,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const endDate = new Date(event.end_date);
                 endDate.setDate(endDate.getDate());
 
+                // Add all events to the calendar
                 calendar.addEvent({
                     title: event.event_name,
                     start: `${event.start_date}T${event.start_time}`, // Include the time
@@ -529,27 +529,27 @@ document.addEventListener('DOMContentLoaded', function() {
                     color: getColorBasedOnStatus(event.status)
                 });
 
-                // Populate upcoming events table
-// Populate upcoming events table
-$('#upcomingEventsBody').append(`
-    <tr>
-        <td><a href="#" class="event-link" 
-            data-event-name="${event.event_name}" 
-            data-start-date="${event.start_date}" 
-            data-start-time="${event.start_time}" 
-            data-end-date="${endDate.toISOString().split('T')[0]}" 
-            data-end-time="${event.end_time}" 
-            data-facility="${event.facility}" 
-            data-description="${event.event_description}" 
-            data-status="${event.status}">
-            ${event.event_name}</a>
-        </td>
-        <td>${event.start_date}</td>
-        <td>${endDate.toISOString().split('T')[0]}</td>
-        <td><span class="legend-color status-${event.status.toLowerCase()}"></span>${event.status}</td>
-    </tr>
-`);
-
+                // Only populate the upcoming events table if status is "Approve"
+                if (event.status === 'Approve') {
+                    $('#upcomingEventsBody').append(`
+                        <tr>
+                            <td><a href="#" class="event-link" 
+                                data-event-name="${event.event_name}" 
+                                data-start-date="${event.start_date}" 
+                                data-start-time="${event.start_time}" 
+                                data-end-date="${endDate.toISOString().split('T')[0]}" 
+                                data-end-time="${event.end_time}" 
+                                data-facility="${event.facility}" 
+                                data-description="${event.event_description}" 
+                                data-status="${event.status}">
+                                ${event.event_name}</a>
+                            </td>
+                            <td>${event.start_date}</td>
+                            <td>${endDate.toISOString().split('T')[0]}</td>
+                            <td><span class="legend-color status-${event.status.toLowerCase()}"></span>${event.status}</td>
+                        </tr>
+                    `);
+                }
             });
             calendar.render();
         });

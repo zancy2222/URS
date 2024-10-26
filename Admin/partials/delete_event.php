@@ -1,35 +1,27 @@
 <?php 
-include 'db_conn.php'; // Ensure you have the database connection
+include 'db_conn.php'; // Ensure database connection is available
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Sanitize and get the POST data
+    // Get and sanitize the event ID
     $event_id = intval($_POST['event_id']);
 
-    // Delete from each relevant event table
-    $tables = ['guest_events', 'admin_events', 'student_leader_events', 'office_events'];
+    // Delete the event from admin_events only
+    $sql = "DELETE FROM admin_events WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param('i', $event_id);
 
-    $isDeleted = true; // Track if deletion was successful
-
-    foreach ($tables as $table) {
-        $sql = "DELETE FROM $table WHERE id = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param('i', $event_id);
-        
-        if (!$stmt->execute()) {
-            $isDeleted = false; // If any deletion fails, set this to false
-            break; // Exit the loop if there's an error
-        }
-    }
-
-    if ($isDeleted) {
+    if ($stmt->execute()) {
         // Successful deletion
-        header("Location: ../view_booking.php?status=deleted");
+        echo "<script>alert('Event deleted Successfully!'); window.location.href = '../view_booking.php';</script>";
         exit();
     } else {
         // Handle deletion failure
         echo "Error deleting event: " . $stmt->error;
     }
+
+    $stmt->close();
 } else {
     echo "Invalid request.";
 }
+$conn->close();
 ?>

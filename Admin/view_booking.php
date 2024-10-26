@@ -405,103 +405,104 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 1) {
                             <td>
                                 <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#viewModal<?php echo $row['id']; ?>">View</button>
                                 <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal<?php echo $row['id']; ?>">Delete</button>
-                                <!-- <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editModal<?php echo $row['id']; ?>">Edit</button> -->
                             </td>
                         </tr>
 
                         <!-- View Modal -->
-                    <!-- View Modal -->
-<div class="modal fade" id="viewModal<?php echo $row['id']; ?>" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="viewModalLabel">View Event</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p><strong>Event Name:</strong> <?php echo $row['event_name']; ?></p>
-                <p><strong>Start Date:</strong> <?php echo $row['start_date']; ?></p>
-                <p><strong>End Date:</strong> <?php echo $row['end_date']; ?></p>
-                <p><strong>Start Time:</strong> <?php echo $row['start_time']; ?></p>
-                <p><strong>End Time:</strong> <?php echo $row['end_time']; ?></p>
-                <p><strong>Facility:</strong> <?php echo $row['facility']; ?></p>
-                <p><strong>Status:</strong> <?php echo $row['status']; ?></p>
-                <p><strong>Description:</strong> <?php echo !empty($row['event_description']) ? $row['event_description'] : 'N/A'; ?></p>
-                <p><strong>Letter of Request:</strong>
-                    <?php if (!empty($row['letter_of_request'])): ?>
-                        <a href="../partials/uploads/<?php echo $row['letter_of_request']; ?>" target="_blank">Download</a>
-                    <?php else: ?>
-                        N/A
-                    <?php endif; ?>
-                </p>
-                <p><strong>Facility Form Request:</strong>
-                    <?php if (!empty($row['facility_form_request'])): ?>
-                        <a href="../partials/uploads/<?php echo $row['facility_form_request']; ?>" target="_blank">Download</a>
-                    <?php else: ?>
-                        N/A
-                    <?php endif; ?>
-                </p>
-                <p><strong>Contract of Lease:</strong>
-                    <?php if (!empty($row['contract_of_lease'])): ?>
-                        <a href="../partials/uploads/<?php echo $row['contract_of_lease']; ?>" target="_blank">Download</a>
-                    <?php else: ?>
-                        N/A
-                    <?php endif; ?>
-                </p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-light" title="View Reviews" data-toggle="modal" data-target="#reviewModal<?php echo $row['id']; ?>">
-                    <i class="fas fa-eye"></i> Reviews
-                </button>
-                <button type="button" class="btn btn-light" title="Edit Event" data-toggle="modal" data-target="#editModal<?php echo $row['id']; ?>">
-                    <i class="fas fa-pencil-alt"></i>
-                </button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
+                        <div class="modal fade" id="viewModal<?php echo $row['id']; ?>" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="viewModalLabel">View Event</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p><strong>Event Name:</strong> <?php echo $row['event_name']; ?></p>
+                                        <p><strong>Start Date:</strong> <?php echo $row['start_date']; ?></p>
+                                        <p><strong>End Date:</strong> <?php echo $row['end_date']; ?></p>
+                                        <p><strong>Start Time:</strong> <?php echo $row['start_time']; ?></p>
+                                        <p><strong>End Time:</strong> <?php echo $row['end_time']; ?></p>
+                                        <p><strong>Facility:</strong> <?php echo $row['facility']; ?></p>
+                                        <p><strong>Status:</strong> <?php echo $row['status']; ?></p>
+                                        <p><strong>Description:</strong> <?php echo !empty($row['event_description']) ? $row['event_description'] : 'N/A'; ?></p>
+                                        <p><strong>Letter of Request:</strong>
+                                            <?php if (!empty($row['letter_of_request'])): ?>
+                                                <a href="../partials/uploads/<?php echo $row['letter_of_request']; ?>" target="_blank">Download</a>
+                                            <?php else: ?>
+                                                N/A
+                                            <?php endif; ?>
+                                        </p>
+                                        <p><strong>Facility Form Request:</strong>
+                                            <?php if (!empty($row['facility_form_request'])): ?>
+                                                <a href="../partials/uploads/<?php echo $row['facility_form_request']; ?>" target="_blank">Download</a>
+                                            <?php else: ?>
+                                                N/A
+                                            <?php endif; ?>
+                                        </p>
+                                        <p><strong>Contract of Lease:</strong>
+                                            <?php if (!empty($row['contract_of_lease'])): ?>
+                                                <a href="../partials/uploads/<?php echo $row['contract_of_lease']; ?>" target="_blank">Download</a>
+                                            <?php else: ?>
+                                                N/A
+                                            <?php endif; ?>
+                                        </p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-light" title="View Reviews" data-toggle="modal" data-target="#reviewModal<?php echo $row['id']; ?>">
+                                            <i class="fas fa-eye"></i> Reviews
+                                        </button>
+                                        <button type="button" class="btn btn-light" title="Edit Event" data-toggle="modal" data-target="#editModal<?php echo $row['id']; ?>">
+                                            <i class="fas fa-pencil-alt"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-<!-- Review Modal -->
-<div class="modal fade" id="reviewModal<?php echo $row['id']; ?>" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="reviewModalLabel">Event Reviews</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <?php
-                // Fetch reviews for this event
-                $eventId = $row['id'];
-                $reviewQuery = "SELECT comments FROM event_reviews WHERE event_id = ?";
-                $stmt = $conn->prepare($reviewQuery);
-                $stmt->bind_param('i', $eventId);
-                $stmt->execute();
-                $resultReviews = $stmt->get_result();
+                        <!-- Review Modal -->
+                        <div class="modal fade" id="reviewModal<?php echo $row['id']; ?>" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="reviewModalLabel">Event Reviews for <?php echo htmlspecialchars($row['event_name']); ?></h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <?php
+                                        // Fetch reviews for this event
+                                        $eventId = $row['id'];
+                                        $reviewQuery = "SELECT comments, options FROM event_reviews WHERE event_id = ?";
+                                        $stmt = $conn->prepare($reviewQuery);
+                                        $stmt->bind_param('i', $eventId);
+                                        $stmt->execute();
+                                        $resultReviews = $stmt->get_result();
 
-                if ($resultReviews->num_rows > 0) {
-                    while ($review = $resultReviews->fetch_assoc()) {
-                        echo '<p>' . htmlspecialchars($review['comments']) . '</p>';
-                    }
-                } else {
-                    echo '<p>No reviews available for this event.</p>';
-                }
+                                        if ($resultReviews->num_rows > 0) {
+                                            while ($review = $resultReviews->fetch_assoc()) {
+                                                echo '<div class="review-item">';
+                                                echo '<p><strong>Comments:</strong> ' . htmlspecialchars($review['comments']) . '</p>';
+                                                echo '<p><strong>Options:</strong> ' . htmlspecialchars($review['options']) . '</p>';
+                                                echo '</div>';
+                                                echo '<hr>';
+                                            }
+                                        } else {
+                                            echo '<p>No reviews available for this event.</p>';
+                                        }
 
-                $stmt->close();
-                ?>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
+                                        $stmt->close();
+                                        ?>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
                         <!-- Edit Modal -->
                         <div class="modal fade" id="editModal<?php echo $row['id']; ?>" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
@@ -575,6 +576,7 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 1) {
                         </div>
 
                         <!-- Delete Modal -->
+                        <!-- Delete Modal -->
                         <div class="modal fade" id="deleteModal<?php echo $row['id']; ?>" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
@@ -590,6 +592,7 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 1) {
                                     <div class="modal-footer">
                                         <form action="partials/delete_event.php" method="POST">
                                             <input type="hidden" name="event_id" value="<?php echo $row['id']; ?>">
+                                            <input type="hidden" name="event_type" value="admin_events"> <!-- Specify the table name here -->
                                             <button type="submit" class="btn btn-danger">Delete</button>
                                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                                         </form>
@@ -597,6 +600,7 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 1) {
                                 </div>
                             </div>
                         </div>
+
 
                 <?php
                     }

@@ -15,6 +15,7 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 2) {
     <title>URSMFEMSS Homepage</title>
     <!--BOOTSTRAP LINK-->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
@@ -256,14 +257,14 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 2) {
 
         <div class="collapse navbar-collapse navbar-expand" id="navbarSupportedContent">
             <ul class="ml-auto navbar-nav">
-     <li id="vbr" class="nav-item">
-        <a class="nav-link rounded-pill" href="view_booking.php">
-            <img src="Header_Images/vbr.png" alt="Icon" />
-            View Booking Requests
-        </a>
-    </li>
+                <li id="vbr" class="nav-item">
+                    <a class="nav-link rounded-pill" href="view_booking.php">
+                        <img src="Header_Images/vbr.png" alt="Icon" />
+                        View Booking Requests
+                    </a>
+                </li>
 
- 
+
                 <li id="acc" class="nav-item dropdown">
                     <a class="nav-link rounded-pill dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <img src="Header_Images/account.png" alt="Icon" />
@@ -273,7 +274,7 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 2) {
                         <a id="admin1" class="dropdown-item" href="Profile.php" id="profileLink">
                             <img src="Header_Images/account.png" alt="Icon" />
                             Profile</a>
-                       
+
 
                         <a id="signout" class="dropdown-item" href="../login.php">
                             <img src="Header_Images/sign_out.png" alt="Icon" />
@@ -288,20 +289,62 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 2) {
     <!-- <h1>Welcome to Admin Dashboard (View booking), <?php echo $_SESSION['username']; ?>!</h1> -->
     <div class="container mt-5">
         <h2 class="mb-4">Booking Events</h2>
+        <?php
+        // Ensure database connection
+        include 'partials/db_conn.php';
+
+        $statusFilter = $_GET['status'] ?? '';
+        $facilityFilter = $_GET['facility'] ?? '';
+        $startDateFilter = $_GET['start_date'] ?? '';
+        $timestampFilter = $_GET['timestamp'] ?? '';
+        ?>
+        <form method="get" class="mb-4">
+            <div class="row">
+                <div class="col-md-3">
+                    <label for="statusFilter">Status</label>
+                    <select id="statusFilter" name="status" class="form-control">
+                        <option value="">All</option>
+                        <option value="Approve" <?php if ($statusFilter == 'Approve') echo 'selected'; ?>>Approve</option>
+                        <option value="Pending" <?php if ($statusFilter == 'Pending') echo 'selected'; ?>>Pending</option>
+                        <option value="Reject" <?php if ($statusFilter == 'Reject') echo 'selected'; ?>>Reject</option>
+                        <option value="On Hold" <?php if ($statusFilter == 'On Hold') echo 'selected'; ?>>On Hold</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="facilityFilter">Facility</label>
+                    <input type="text" id="facilityFilter" name="facility" class="form-control" value="<?php echo htmlspecialchars($facilityFilter); ?>">
+                </div>
+
+                <div class="col-md-3">
+                    <label for="startDateFilter">Start Date</label>
+                    <input type="date" id="startDateFilter" name="start_date" class="form-control" value="<?php echo htmlspecialchars($startDateFilter); ?>">
+                </div>
+
+                <div class="col-md-3">
+                    <label for="timestampFilter">Timestamp</label>
+                    <input type="date" id="timestampFilter" name="timestamp" class="form-control" value="<?php echo htmlspecialchars($timestampFilter); ?>">
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                <div class="col-md-12 text-right">
+                    <button type="submit" class="btn btn-primary">Filter</button>
+                </div>
+            </div>
+        </form>
 
         <!-- Table to display booking events -->
         <table class="table table-striped table-bordered">
             <thead>
                 <tr>
-                    <th>ID</th>
                     <th>Event Name</th>
+                    <th>Organization Name</th>
+                    <th>Status</th>
+                    <th>Timestamp</th>
                     <th>Start Date</th>
                     <th>End Date</th>
-                    <th>Start Time</th>
-                    <th>End Time</th>
                     <th>Facility</th>
-                    <th>Status</th>
-                    <th>Description</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -309,28 +352,28 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 2) {
                 <?php
                 include 'partials/db_conn.php'; // Ensure connection to the database
 
-                // Modify query to fetch from all relevant event tables including event_description
-                $query = "
-            SELECT id, event_name, start_date, end_date, start_time, end_time, facility, status, event_description, 
-                   letter_of_request, facility_form_request, contract_of_lease 
-            FROM (
-                SELECT id, event_name, start_date, end_date, start_time, end_time, facility, status, 
-                       event_description, letter_of_request, facility_form_request, contract_of_lease 
-                FROM guest_events
-                UNION ALL
-                SELECT id, event_name, start_date, end_date, start_time, end_time, facility, status, 
-                       event_description, letter_of_request, facility_form_request, contract_of_lease 
-                FROM admin_events
-                UNION ALL
-                SELECT id, event_name, start_date, end_date, start_time, end_time, facility, status, 
-                       event_description, letter_of_request, facility_form_request, contract_of_lease 
-                FROM student_leader_events
-                UNION ALL
-                SELECT id, event_name, start_date, end_date, start_time, end_time, facility, status, 
-                       event_description, letter_of_request, facility_form_request, contract_of_lease 
-                FROM office_events
-            ) AS all_events
-            ORDER BY start_date, start_time";
+                // Query only student_leader_events
+                $query = "SELECT id, event_name, org_name, start_date, end_date, start_time, end_time, facility, status, 
+                  event_description, letter_of_request, facility_form_request, contract_of_lease, created_at AS timestamp 
+                  FROM student_leader_events
+                  WHERE 1=1";
+
+                // Apply filters (if necessary)
+                if (!empty($statusFilter)) {
+                    $query .= " AND status = '" . $conn->real_escape_string($statusFilter) . "'";
+                }
+                if (!empty($facilityFilter)) {
+                    $query .= " AND facility LIKE '%" . $conn->real_escape_string($facilityFilter) . "%'";
+                }
+                if (!empty($startDateFilter)) {
+                    $query .= " AND start_date = '" . $conn->real_escape_string($startDateFilter) . "'";
+                }
+                if (!empty($timestampFilter)) {
+                    $query .= " AND DATE(created_at) = '" . $conn->real_escape_string($timestampFilter) . "'";
+                }
+
+                // Order by timestamp (newest first)
+                $query .= " ORDER BY timestamp DESC";
 
                 $result = $conn->query($query);
 
@@ -338,19 +381,15 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 2) {
                     while ($row = $result->fetch_assoc()) {
                 ?>
                         <tr>
-                            <td><?php echo $row['id']; ?></td>
-                            <td><?php echo $row['event_name']; ?></td>
-                            <td><?php echo $row['start_date']; ?></td>
-                            <td><?php echo $row['end_date']; ?></td>
-                            <td><?php echo $row['start_time']; ?></td>
-                            <td><?php echo $row['end_time']; ?></td>
-                            <td><?php echo $row['facility']; ?></td>
-                            <td><?php echo $row['status']; ?></td>
-                            <td><?php echo !empty($row['event_description']) ? $row['event_description'] : 'N/A'; ?></td>
+                            <td><?php echo htmlspecialchars($row['event_name']); ?></td>
+                            <td><?php echo htmlspecialchars($row['org_name']); ?></td>
+                            <td><?php echo htmlspecialchars($row['status']); ?></td>
+                            <td><?php echo htmlspecialchars($row['timestamp']); ?></td>
+                            <td><?php echo htmlspecialchars($row['start_date']); ?></td>
+                            <td><?php echo htmlspecialchars($row['end_date']); ?></td>
+                            <td><?php echo htmlspecialchars($row['facility']); ?></td>
                             <td>
                                 <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#viewModal<?php echo $row['id']; ?>">View</button>
-                                <!-- <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editModal<?php echo $row['id']; ?>">Update</button>
-                                <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal<?php echo $row['id']; ?>">Delete</button> -->
                             </td>
                         </tr>
 
@@ -396,6 +435,54 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 2) {
                                         </p>
                                     </div>
                                     <div class="modal-footer">
+                                        <button type="button" class="btn btn-light" title="View Reviews" data-toggle="modal" data-target="#reviewModal<?php echo $row['id']; ?>">
+                                            <i class="fas fa-eye"></i> Reviews
+                                        </button>
+                                        <button type="button" class="btn btn-light" title="Edit Event" data-toggle="modal" data-target="#editModal<?php echo $row['id']; ?>">
+                                            <i class="fas fa-pencil-alt"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Review Modal -->
+                        <div class="modal fade" id="reviewModal<?php echo $row['id']; ?>" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="reviewModalLabel">Event Reviews for <?php echo htmlspecialchars($row['event_name']); ?></h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <?php
+                                        // Fetch reviews for this event
+                                        $eventId = $row['id'];
+                                        $reviewQuery = "SELECT comments, options FROM event_reviews WHERE event_id = ?";
+                                        $stmt = $conn->prepare($reviewQuery);
+                                        $stmt->bind_param('i', $eventId);
+                                        $stmt->execute();
+                                        $resultReviews = $stmt->get_result();
+
+                                        if ($resultReviews->num_rows > 0) {
+                                            while ($review = $resultReviews->fetch_assoc()) {
+                                                echo '<div class="review-item">';
+                                                echo '<p><strong>Comments:</strong> ' . htmlspecialchars($review['comments']) . '</p>';
+                                                echo '<p><strong>Options:</strong> ' . htmlspecialchars($review['options']) . '</p>';
+                                                echo '</div>';
+                                                echo '<hr>';
+                                            }
+                                        } else {
+                                            echo '<p>No reviews available for this event.</p>';
+                                        }
+
+                                        $stmt->close();
+                                        ?>
+                                    </div>
+                                    <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                     </div>
                                 </div>
@@ -407,27 +494,66 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 2) {
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="editModalLabel">Update Event Status</h5>
+                                        <h5 class="modal-title" id="editModalLabel">Edit Event</h5>
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>
-                                    <form action="partials/update_event.php" method="POST">
+                                    <form action="partials/edit_event.php" method="POST" enctype="multipart/form-data">
                                         <div class="modal-body">
                                             <input type="hidden" name="event_id" value="<?php echo $row['id']; ?>">
                                             <div class="form-group">
-                                                <label for="status">Status</label>
-                                                <select class="form-control" name="status" required>
-                                                    <option value="Approve" <?php if ($row['status'] == 'Approve') echo 'selected'; ?>>Approve</option>
-                                                    <option value="Pending" <?php if ($row['status'] == 'Pending') echo 'selected'; ?>>Pending</option>
-                                                    <option value="Reject" <?php if ($row['status'] == 'Reject') echo 'selected'; ?>>Reject</option>
-                                                    <option value="On Hold" <?php if ($row['status'] == 'On Hold') echo 'selected'; ?>>On Hold</option>
-                                                </select>
+                                                <label for="eventName<?php echo $row['id']; ?>">Event Name</label>
+                                                <input type="text" id="eventName<?php echo $row['id']; ?>" name="event_name" class="form-control" value="<?php echo $row['event_name']; ?>" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="startDate<?php echo $row['id']; ?>">Start Date</label>
+                                                <input type="date" id="startDate<?php echo $row['id']; ?>" name="start_date" class="form-control" value="<?php echo $row['start_date']; ?>" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="endDate<?php echo $row['id']; ?>">End Date</label>
+                                                <input type="date" id="endDate<?php echo $row['id']; ?>" name="end_date" class="form-control" value="<?php echo $row['end_date']; ?>" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="startTime<?php echo $row['id']; ?>">Start Time</label>
+                                                <input type="time" id="startTime<?php echo $row['id']; ?>" name="start_time" class="form-control" value="<?php echo $row['start_time']; ?>" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="endTime<?php echo $row['id']; ?>">End Time</label>
+                                                <input type="time" id="endTime<?php echo $row['id']; ?>" name="end_time" class="form-control" value="<?php echo $row['end_time']; ?>" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="facility<?php echo $row['id']; ?>">Facility</label>
+                                                <input type="text" id="facility<?php echo $row['id']; ?>" name="facility" class="form-control" value="<?php echo $row['facility']; ?>" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="eventDescription<?php echo $row['id']; ?>">Event Description</label>
+                                                <textarea id="eventDescription<?php echo $row['id']; ?>" name="event_description" class="form-control"><?php echo $row['event_description']; ?></textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="letterOfRequest<?php echo $row['id']; ?>">Letter of Request (if applicable)</label>
+                                                <input type="file" id="letterOfRequest<?php echo $row['id']; ?>" name="letter_of_request" class="form-control">
+                                                <small class="form-text text-muted">Current File: <?php echo !empty($row['letter_of_request']) ? $row['letter_of_request'] : 'None'; ?></small>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="facilityFormRequest<?php echo $row['id']; ?>">Facility Form Request (if applicable)</label>
+                                                <input type="file" id="facilityFormRequest<?php echo $row['id']; ?>" name="facility_form_request" class="form-control">
+                                                <small class="form-text text-muted">Current File: <?php echo !empty($row['facility_form_request']) ? $row['facility_form_request'] : 'None'; ?></small>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="contractOfLease<?php echo $row['id']; ?>">Contract of Lease (if applicable)</label>
+                                                <input type="file" id="contractOfLease<?php echo $row['id']; ?>" name="contract_of_lease" class="form-control">
+                                                <small class="form-text text-muted">Current File: <?php echo !empty($row['contract_of_lease']) ? $row['contract_of_lease'] : 'None'; ?></small>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="status<?php echo $row['id']; ?>">Status</label>
+                                                <input type="text" id="status<?php echo $row['id']; ?>" name="status" class="form-control" value="<?php echo $row['status']; ?>" disabled>
+                                                <small class="form-text text-muted">Status cannot be changed.</small>
                                             </div>
                                         </div>
                                         <div class="modal-footer">
+                                            <button type="submit" class="btn btn-primary">Save Changes</button>
                                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                            <button type="submit" class="btn btn-primary">Update Status</button>
                                         </div>
                                     </form>
                                 </div>
@@ -435,39 +561,16 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 2) {
                         </div>
 
 
-                        <!-- Delete Modal -->
-                        <div class="modal fade" id="deleteModal<?php echo $row['id']; ?>" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="deleteModalLabel">Delete Event</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <form action="partials/delete_event.php" method="POST">
-                                        <div class="modal-body">
-                                            <input type="hidden" name="event_id" value="<?php echo $row['id']; ?>">
-                                            <p>Are you sure you want to delete this event?</p>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                            <button type="submit" class="btn btn-danger">Delete</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
+
                 <?php
                     }
                 } else {
-                    echo "<tr><td colspan='10' class='text-center'>No booking events found.</td></tr>";
+                    echo "<tr><td colspan='8' class='text-center'>No events found</td></tr>";
                 }
                 ?>
             </tbody>
         </table>
     </div>
-
 
     <!-- FullCalendar JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js"></script>
