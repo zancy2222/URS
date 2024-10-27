@@ -271,7 +271,7 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 2) {
                         Account&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a id="admin1" class="dropdown-item" href="Profile.php" id="profileLink">
+                        <a id="admin1" class="dropdown-item" href="Acc_Credentials.php" id="profileLink">
                             <img src="Header_Images/account.png" alt="Icon" />
                             Profile</a>
 

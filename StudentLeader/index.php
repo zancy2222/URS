@@ -20,9 +20,13 @@ if (isset($_SESSION['org_id'])) {
     $stmt->fetch();
     $stmt->close();
 }
+// Fetch facilities from the database
+$sql = "SELECT name FROM facilities";
+$result = $conn->query($sql);
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -32,28 +36,27 @@ if (isset($_SESSION['org_id'])) {
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-
-        @font-face { 
-        font-family: "Hussar Bold Web Edition";
-        src: url("https://db.onlinewebfonts.com/t/60020c76d48f22e20a23b37c056cb339.eot");
-        src: url("https://db.onlinewebfonts.com/t/60020c76d48f22e20a23b37c056cb339.eot?#iefix")format("embedded-opentype"),
-        url("https://db.onlinewebfonts.com/t/60020c76d48f22e20a23b37c056cb339.woff2")format("woff2"),
-        url("https://db.onlinewebfonts.com/t/60020c76d48f22e20a23b37c056cb339.woff")format("woff"),
-        url("https://db.onlinewebfonts.com/t/60020c76d48f22e20a23b37c056cb339.ttf")format("truetype"),
-        url("https://db.onlinewebfonts.com/t/60020c76d48f22e20a23b37c056cb339.svg#Hussar Bold Web Edition")format("svg");
+        @font-face {
+            font-family: "Hussar Bold Web Edition";
+            src: url("https://db.onlinewebfonts.com/t/60020c76d48f22e20a23b37c056cb339.eot");
+            src: url("https://db.onlinewebfonts.com/t/60020c76d48f22e20a23b37c056cb339.eot?#iefix")format("embedded-opentype"),
+                url("https://db.onlinewebfonts.com/t/60020c76d48f22e20a23b37c056cb339.woff2")format("woff2"),
+                url("https://db.onlinewebfonts.com/t/60020c76d48f22e20a23b37c056cb339.woff")format("woff"),
+                url("https://db.onlinewebfonts.com/t/60020c76d48f22e20a23b37c056cb339.ttf")format("truetype"),
+                url("https://db.onlinewebfonts.com/t/60020c76d48f22e20a23b37c056cb339.svg#Hussar Bold Web Edition")format("svg");
         }
 
         .navbar-brand {
             font-family: Hussar Bold Web Edition;
-        }  
+        }
 
         #mainNavbar {
             height: auto;
         }
-            
+
         #mainNavbar .navbar-brand {
             font-size: 1em;
-        } 
+        }
 
         .bg-primary-custom {
             background-color: #004AAD !important;
@@ -63,57 +66,63 @@ if (isset($_SESSION['org_id'])) {
             background-color: white;
             font-size: 12px;
         }
-        
+
         #mainNavbar .navbar-nav .nav-item .nav-link {
-            color:#004AAD;
-            padding:2px;
-            padding-left:5px;
+            color: #004AAD;
+            padding: 2px;
+            padding-left: 5px;
             width: 180px;
             height: 25px;
         }
 
         #mainNavbar .navbar-nav .nav-item .nav-link img {
-            width: 20px; height: 20px;
+            width: 20px;
+            height: 20px;
         }
 
         #mainNavbar .dropdown-menu .dropdown-item {
-            font-size: 13px; color: #004AAD; padding: 0px; margin-right:5px;
+            font-size: 13px;
+            color: #004AAD;
+            padding: 0px;
+            margin-right: 5px;
         }
-        
+
         .dropdown-item {
             font-size: 12px;
         }
 
         /*dropdown images sizing*/
         #mainNavbar .dropdown-menu .dropdown-item img {
-            width: 20px; height: 20px; margin:5px;
+            width: 20px;
+            height: 20px;
+            margin: 5px;
         }
 
         .navbar-nav .nav-item {
-            margin-right: 15px; 
+            margin-right: 15px;
         }
 
         @media only screen and (max-width: 960px) {
-        #mainNavbar .navbar-brand {
-            font-size: 1em;
-            font-weight: bold;
-        } 
+            #mainNavbar .navbar-brand {
+                font-size: 1em;
+                font-weight: bold;
+            }
 
-        .navbar-nav .nav-item .nav-link {
-            background-color: white;
-            font-size: 12px;
-        }
-        
-        .dropdown-item {
-            font-size: 10px;
+            .navbar-nav .nav-item .nav-link {
+                background-color: white;
+                font-size: 12px;
+            }
+
+            .dropdown-item {
+                font-size: 10px;
+            }
+
+            .navbar-nav .nav-item {
+                margin-right: 5px;
+            }
         }
 
-        .navbar-nav .nav-item {
-            margin-right: 5px; 
-        }
-        }
 
-        
         .legend-section {
             margin-top: 20px;
         }
@@ -247,7 +256,6 @@ if (isset($_SESSION['org_id'])) {
                 /* Smaller font on mobile */
             }
         }
-
     </style>
 
 
@@ -255,7 +263,7 @@ if (isset($_SESSION['org_id'])) {
 
 <body class="d-flexbox vw-100 vh-100">
 
-    <!--HEADER-->        
+    <!--HEADER-->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary-custom" id="mainNavbar">
         <a class="navbar-brand" href="index.php">University of Rizal System - Morong Facilities E-Monitoring and Scheduling System</a>
 
@@ -272,17 +280,17 @@ if (isset($_SESSION['org_id'])) {
                     </a>
                 </li>
 
-              
+
                 <li id="acc" class="nav-item dropdown">
                     <a class="nav-link rounded-pill dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <img src="Header_Images/account.png" alt="Icon" />
                         Account&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a id="admin1" class="dropdown-item" href="Profile.php" id="profileLink">
+                        <a id="admin1" class="dropdown-item" href="Acc_Credentials.php" id="profileLink">
                             <img src="Header_Images/account.png" alt="Icon" />
                             Profile</a>
-                      
+
                         <a id="signout" class="dropdown-item" href="../login.php">
                             <img src="Header_Images/sign_out.png" alt="Icon" />
                             Log out</a>
@@ -293,7 +301,7 @@ if (isset($_SESSION['org_id'])) {
             </ul>
         </div>
     </nav>
- 
+
     <div class="container mt-4">
         <!-- Grid for Calendar and Upcoming Events -->
         <div class="row">
@@ -324,214 +332,232 @@ if (isset($_SESSION['org_id'])) {
                     <label for="facilityFilter" class="form-label">Filter by Facility</label>
                     <select id="facilityFilter" class="form-select">
                         <option value="all">All Facilities</option>
-                        <option value="EARTS">EARTS</option>
-                        <option value="FUNCTION HALL">FUNCTION HALL</option>
-                        <option value="GYMNASIUM">GYMNASIUM</option>
-                        <option value="QUADRANGLE">QUADRANGLE</option>
-                        <option value="AVEC">AVEC</option>
+
+                        <?php
+                        // Check if there are results
+                        if ($result->num_rows > 0) {
+                            // Output data for each row
+                            while ($row = $result->fetch_assoc()) {
+                                // Use htmlspecialchars to prevent XSS attacks
+                                $facility_name = htmlspecialchars($row['name']);
+                                echo "<option value=\"$facility_name\">$facility_name</option>";
+                            }
+                        } else {
+                            echo "<option value=\"\">No facilities available</option>"; // Optional: Handle no results
+                        }
+                        ?>
                     </select>
                 </div>
                 <div class="upcoming-events-section">
                     <h4>UPCOMING EVENTS</h4>
                     <table class="table table-bordered table-striped mt-4">
-    <thead>
-        <tr>
-            <th>Event Name</th>
-            <th>Start Date</th>
-            <th>End Date</th>
-            <th>Status</th>
-        </tr>
-    </thead>
-    <tbody id="upcomingEventsBody">
-        <!-- Events will be dynamically added here -->
-    </tbody>
-</table>
+                        <thead>
+                            <tr>
+                                <th>Event Name</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="upcomingEventsBody">
+                            <!-- Events will be dynamically added here -->
+                        </tbody>
+                    </table>
 
                 </div>
             </div>
         </div>
     </div>
 
-<!-- Book Event Modal for Student Leader -->
-<div class="modal fade" id="studentLeaderBookEventModal" tabindex="-1" role="dialog" aria-labelledby="studentLeaderBookEventModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="studentLeaderBookEventModalLabel">Create an Event</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="studentLeaderBookingForm" enctype="multipart/form-data">
-                <div class="form-group">
-        <label for="orgName">Organization Name</label>
-        <input type="text" class="form-control" id="orgName" name="orgName" value="<?php echo htmlspecialchars($orgName); ?>" readonly>
-    </div>
-                    <div class="form-group">
-                        <label for="email">Email Address</label>
-                        <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="eventName">Event Name</label>
-                        <input type="text" class="form-control" id="eventName" name="eventName" placeholder="Enter event name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="startDate">Start Date</label>
-                        <input type="date" class="form-control" id="startDate" name="startDate" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="endDate">End Date</label>
-                        <input type="date" class="form-control" id="endDate" name="endDate">
-                    </div>
-                    <div class="form-group">
-                        <label for="startTime">Start Time</label>
-                        <input type="time" class="form-control" id="startTime" name="startTime" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="endTime">End Time</label>
-                        <input type="time" class="form-control" id="endTime" name="endTime">
-                    </div>
-                    <div class="form-group">
-                        <label for="facility">Facility</label>
-                        <select class="form-control" id="facility" name="facility" required>
-                            <option value="EARTS">EARTS</option>
-                            <option value="FUNCTION HALL">FUNCTION HALL</option>
-                            <option value="GYMNASIUM">GYMNASIUM</option>
-                            <option value="QUADRANGLE">QUADRANGLE</option>
-                            <option value="AVEC">AVEC</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="eventDescription">Description</label>
-                        <textarea class="form-control" id="eventDescription" name="eventDescription" rows="3" placeholder="Enter event description"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="letterOfRequest">Proposal (PDF)</label>
-                        <input type="file" class="form-control" id="letterOfRequest" name="letterOfRequest" accept=".pdf">
-                    </div>
-                    <div class="form-group">
-                        <label for="facilityFormRequest">Facility Form Request (PDF)</label>
-                        <input type="file" class="form-control" id="facilityFormRequest" name="facilityFormRequest" accept=".pdf">
-                    </div>
-                    <div class="form-group">
-                        <label for="contractOfLease">Student Activity Form (PDF)</label>
-                        <input type="file" class="form-control" id="contractOfLease" name="contractOfLease" accept=".pdf">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Create Event</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<!-- Event Details Modal -->
-<div class="modal fade" id="eventDetailsModal" tabindex="-1" role="dialog" aria-labelledby="eventDetailsModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="eventDetailsModalLabel">Event Details</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p><strong>Event Name:</strong> <span id="eventDetailName"></span></p>
-                <p><strong>Start Date:</strong> <span id="eventDetailStartDate"></span></p>
-                <p><strong>End Date:</strong> <span id="eventDetailEndDate"></span></p>
-                <p><strong>Start Time:</strong> <span id="eventDetailStartTime"></span></p>
-                <p><strong>End Time:</strong> <span id="eventDetailEndTime"></span></p>
-                <p><strong>Facility:</strong> <span id="eventDetailFacility"></span></p>
-                <p><strong>Description:</strong> <span id="eventDetailDescription"></span></p>
-                <p><strong>Status:</strong> <span id="eventDetailStatus"></span></p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    <!-- Book Event Modal for Student Leader -->
+    <div class="modal fade" id="studentLeaderBookEventModal" tabindex="-1" role="dialog" aria-labelledby="studentLeaderBookEventModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="studentLeaderBookEventModalLabel">Create an Event</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="studentLeaderBookingForm" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="orgName">Organization Name</label>
+                            <input type="text" class="form-control" id="orgName" name="orgName" value="<?php echo htmlspecialchars($orgName); ?>" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="eventName">Event Name</label>
+                            <input type="text" class="form-control" id="eventName" name="eventName" placeholder="Enter event name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="startDate">Start Date</label>
+                            <input type="date" class="form-control" id="startDate" name="startDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="endDate">End Date</label>
+                            <input type="date" class="form-control" id="endDate" name="endDate">
+                        </div>
+                        <div class="form-group">
+                            <label for="startTime">Start Time</label>
+                            <input type="time" class="form-control" id="startTime" name="startTime" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="endTime">End Time</label>
+                            <input type="time" class="form-control" id="endTime" name="endTime">
+                        </div>
+                        <div class="form-group">
+                            <label for="facility">Facility</label>
+                            <select class="form-control" id="facility" name="facility" required>
+                                <option value="">Select a facility</option> <!-- Optional: Default option -->
+                                <?php
+                                // Check if there are results
+                                if ($result->num_rows > 0) {
+                                    // Output data for each row
+                                    while ($row = $result->fetch_assoc()) {
+                                        // Use htmlspecialchars to prevent XSS attacks
+                                        $facility_name = htmlspecialchars($row['name']);
+                                        echo "<option value=\"$facility_name\">$facility_name</option>";
+                                    }
+                                } else {
+                                    echo "<option value=\"\">No facilities available</option>"; // Optional: Handle no results
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="eventDescription">Description</label>
+                            <textarea class="form-control" id="eventDescription" name="eventDescription" rows="3" placeholder="Enter event description"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="letterOfRequest">Proposal (PDF)</label>
+                            <input type="file" class="form-control" id="letterOfRequest" name="letterOfRequest" accept=".pdf">
+                        </div>
+                        <div class="form-group">
+                            <label for="facilityFormRequest">Facility Form Request (PDF)</label>
+                            <input type="file" class="form-control" id="facilityFormRequest" name="facilityFormRequest" accept=".pdf">
+                        </div>
+                        <div class="form-group">
+                            <label for="contractOfLease">Student Activity Form (PDF)</label>
+                            <input type="file" class="form-control" id="contractOfLease" name="contractOfLease" accept=".pdf">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Create Event</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
+
+
+    <!-- Event Details Modal -->
+    <div class="modal fade" id="eventDetailsModal" tabindex="-1" role="dialog" aria-labelledby="eventDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="eventDetailsModalLabel">Event Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Event Name:</strong> <span id="eventDetailName"></span></p>
+                    <p><strong>Start Date:</strong> <span id="eventDetailStartDate"></span></p>
+                    <p><strong>End Date:</strong> <span id="eventDetailEndDate"></span></p>
+                    <p><strong>Start Time:</strong> <span id="eventDetailStartTime"></span></p>
+                    <p><strong>End Time:</strong> <span id="eventDetailEndTime"></span></p>
+                    <p><strong>Facility:</strong> <span id="eventDetailFacility"></span></p>
+                    <p><strong>Description:</strong> <span id="eventDetailDescription"></span></p>
+                    <p><strong>Status:</strong> <span id="eventDetailStatus"></span></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
     <!-- FullCalendar JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-<script>
-$('#studentLeaderBookingForm').on('submit', function(event) {
-    event.preventDefault();
-    var formData = new FormData(this);
-    $.ajax({
-        url: 'partials/book_student_event.php', // Create this file for student leader booking
-        type: 'POST',
-        data: formData,
-        contentType: false,
-        processData: false,
-        success: function(response) {
-            var result = JSON.parse(response);
-            if (result.status === 'success') {
-                alert(result.message);
-                location.reload();
-            } else {
-                alert(result.message);
-            }
-        },
-        error: function() {
-            alert('An error occurred. Please try again.');
-        }
-    });
-});
-</script>
+    <script>
+        $('#studentLeaderBookingForm').on('submit', function(event) {
+            event.preventDefault();
+            var formData = new FormData(this);
+            $.ajax({
+                url: 'partials/book_student_event.php', // Create this file for student leader booking
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    var result = JSON.parse(response);
+                    if (result.status === 'success') {
+                        alert(result.message);
+                        location.reload();
+                    } else {
+                        alert(result.message);
+                    }
+                },
+                error: function() {
+                    alert('An error occurred. Please try again.');
+                }
+            });
+        });
+    </script>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const calendarEl = document.getElementById('calendar');
-    const calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
-        events: [],
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const calendarEl = document.getElementById('calendar');
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                events: [],
 
-        eventClick: function(info) {
-            // Show the event details in the modal for calendar events
-            $('#eventDetailName').text(info.event.title);
-            $('#eventDetailStartDate').text(info.event.start.toLocaleDateString());
-            $('#eventDetailEndDate').text(info.event.end ? info.event.end.toLocaleDateString() : 'N/A');
-            $('#eventDetailStartTime').text(info.event.start.toLocaleTimeString());
-            $('#eventDetailEndTime').text(info.event.end ? info.event.end.toLocaleTimeString() : 'N/A');
-            $('#eventDetailFacility').text(info.event.extendedProps.facility);
-            $('#eventDetailDescription').text(info.event.extendedProps.description);
-            $('#eventDetailStatus').text(info.event.extendedProps.status);
+                eventClick: function(info) {
+                    // Show the event details in the modal for calendar events
+                    $('#eventDetailName').text(info.event.title);
+                    $('#eventDetailStartDate').text(info.event.start.toLocaleDateString());
+                    $('#eventDetailEndDate').text(info.event.end ? info.event.end.toLocaleDateString() : 'N/A');
+                    $('#eventDetailStartTime').text(info.event.start.toLocaleTimeString());
+                    $('#eventDetailEndTime').text(info.event.end ? info.event.end.toLocaleTimeString() : 'N/A');
+                    $('#eventDetailFacility').text(info.event.extendedProps.facility);
+                    $('#eventDetailDescription').text(info.event.extendedProps.description);
+                    $('#eventDetailStatus').text(info.event.extendedProps.status);
 
-            // Open the modal
-            $('#eventDetailsModal').modal('show');
-        }
-    });
+                    // Open the modal
+                    $('#eventDetailsModal').modal('show');
+                }
+            });
 
-    fetch('../partials/fetch_events.php')
-        .then(response => response.json())
-        .then(events => {
-            events.forEach(event => {
-                const endDate = new Date(event.end_date);
-                endDate.setDate(endDate.getDate());
+            fetch('../partials/fetch_events.php')
+                .then(response => response.json())
+                .then(events => {
+                    events.forEach(event => {
+                        const endDate = new Date(event.end_date);
+                        endDate.setDate(endDate.getDate());
 
-                // Add all events to the calendar
-                calendar.addEvent({
-                    title: event.event_name,
-                    start: `${event.start_date}T${event.start_time}`, // Include the time
-                    end: `${event.end_date}T${event.end_time}`, // Include the time
-                    extendedProps: {
-                        facility: event.facility,
-                        description: event.event_description,
-                        status: event.status
-                    },
-                    color: getColorBasedOnStatus(event.status)
-                });
+                        // Add all events to the calendar
+                        calendar.addEvent({
+                            title: event.event_name,
+                            start: `${event.start_date}T${event.start_time}`, // Include the time
+                            end: `${event.end_date}T${event.end_time}`, // Include the time
+                            extendedProps: {
+                                facility: event.facility,
+                                description: event.event_description,
+                                status: event.status
+                            },
+                            color: getColorBasedOnStatus(event.status)
+                        });
 
-                // Only populate the upcoming events table if status is "Approve"
-                if (event.status === 'Approve') {
-                    $('#upcomingEventsBody').append(`
+                        // Only populate the upcoming events table if status is "Approve"
+                        if (event.status === 'Approve') {
+                            $('#upcomingEventsBody').append(`
                         <tr>
                             <td><a href="#" class="event-link" 
                                 data-event-name="${event.event_name}" 
@@ -549,87 +575,87 @@ document.addEventListener('DOMContentLoaded', function() {
                             <td><span class="legend-color status-${event.status.toLowerCase()}"></span>${event.status}</td>
                         </tr>
                     `);
+                        }
+                    });
+                    calendar.render();
+                });
+
+            function getColorBasedOnStatus(status) {
+                switch (status) {
+                    case 'Approve':
+                        return 'green';
+                    case 'Pending':
+                        return 'blue';
+                    case 'Reject':
+                        return 'red';
+                    case 'On Hold':
+                        return 'orange';
+                    default:
+                        return 'gray';
+                }
+            }
+
+            // Facility filter
+            document.getElementById('facilityFilter').addEventListener('change', function() {
+                const selectedFacility = this.value;
+
+                calendar.getEvents().forEach(event => {
+                    if (selectedFacility === 'all' || event.extendedProps.facility === selectedFacility) {
+                        event.setProp('display', 'auto');
+                    } else {
+                        event.setProp('display', 'none');
+                    }
+                });
+            });
+
+            // Helper function to format time to 12-hour format
+            function formatTimeTo12Hour(time) {
+                const [hours, minutes] = time.split(':');
+                let hours12 = parseInt(hours, 10);
+                const ampm = hours12 >= 12 ? 'PM' : 'AM';
+
+                if (hours12 > 12) {
+                    hours12 -= 12;
+                } else if (hours12 === 0) {
+                    hours12 = 12; // Convert 0 to 12 for midnight
+                }
+
+                return `${hours12}:${minutes} ${ampm}`;
+            }
+
+            // Add click event listener for event links in the upcoming events table
+            document.getElementById('upcomingEventsBody').addEventListener('click', function(event) {
+                if (event.target.classList.contains('event-link')) {
+                    event.preventDefault();
+
+                    const eventName = event.target.getAttribute('data-event-name');
+                    const startDate = event.target.getAttribute('data-start-date');
+                    const startTime = event.target.getAttribute('data-start-time');
+                    const endDate = event.target.getAttribute('data-end-date');
+                    const endTime = event.target.getAttribute('data-end-time');
+                    const facility = event.target.getAttribute('data-facility');
+                    const description = event.target.getAttribute('data-description');
+                    const status = event.target.getAttribute('data-status');
+
+                    // Populate the modal with event details
+                    $('#eventDetailName').text(eventName);
+                    $('#eventDetailStartDate').text(startDate);
+                    $('#eventDetailStartTime').text(formatTimeTo12Hour(startTime)); // Convert to 12-hour format
+                    $('#eventDetailEndDate').text(endDate);
+                    $('#eventDetailEndTime').text(formatTimeTo12Hour(endTime)); // Convert to 12-hour format
+                    $('#eventDetailFacility').text(facility);
+                    $('#eventDetailDescription').text(description);
+                    $('#eventDetailStatus').text(status);
+
+                    // Show the modal
+                    $('#eventDetailsModal').modal('show');
                 }
             });
-            calendar.render();
+
         });
-
-    function getColorBasedOnStatus(status) {
-        switch (status) {
-            case 'Approve':
-                return 'green';
-            case 'Pending':
-                return 'blue';
-            case 'Reject':
-                return 'red';
-            case 'On Hold':
-                return 'orange';
-            default:
-                return 'gray';
-        }
-    }
-
-    // Facility filter
-    document.getElementById('facilityFilter').addEventListener('change', function() {
-        const selectedFacility = this.value;
-
-        calendar.getEvents().forEach(event => {
-            if (selectedFacility === 'all' || event.extendedProps.facility === selectedFacility) {
-                event.setProp('display', 'auto');
-            } else {
-                event.setProp('display', 'none');
-            }
-        });
-    });
-
-// Helper function to format time to 12-hour format
-function formatTimeTo12Hour(time) {
-    const [hours, minutes] = time.split(':');
-    let hours12 = parseInt(hours, 10);
-    const ampm = hours12 >= 12 ? 'PM' : 'AM';
-
-    if (hours12 > 12) {
-        hours12 -= 12;
-    } else if (hours12 === 0) {
-        hours12 = 12; // Convert 0 to 12 for midnight
-    }
-
-    return `${hours12}:${minutes} ${ampm}`;
-}
-
-// Add click event listener for event links in the upcoming events table
-document.getElementById('upcomingEventsBody').addEventListener('click', function(event) {
-    if (event.target.classList.contains('event-link')) {
-        event.preventDefault();
-
-        const eventName = event.target.getAttribute('data-event-name');
-        const startDate = event.target.getAttribute('data-start-date');
-        const startTime = event.target.getAttribute('data-start-time');
-        const endDate = event.target.getAttribute('data-end-date');
-        const endTime = event.target.getAttribute('data-end-time');
-        const facility = event.target.getAttribute('data-facility');
-        const description = event.target.getAttribute('data-description');
-        const status = event.target.getAttribute('data-status');
-
-        // Populate the modal with event details
-        $('#eventDetailName').text(eventName);
-        $('#eventDetailStartDate').text(startDate);
-        $('#eventDetailStartTime').text(formatTimeTo12Hour(startTime)); // Convert to 12-hour format
-        $('#eventDetailEndDate').text(endDate);
-        $('#eventDetailEndTime').text(formatTimeTo12Hour(endTime)); // Convert to 12-hour format
-        $('#eventDetailFacility').text(facility);
-        $('#eventDetailDescription').text(description);
-        $('#eventDetailStatus').text(status);
-
-        // Show the modal
-        $('#eventDetailsModal').modal('show');
-    }
-});
-
-});
-
-</script>
+    </script>
 
 
 </body>
+
 </html>

@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         if ($stmt->execute()) {
             echo "Documents updated successfully!";
-            header("Location: Profile.php");
+            header("Location: Acc_Credentials.php");
             exit();
         } else {
             echo "Failed to update documents. Error: " . $stmt->error;
@@ -411,7 +411,7 @@ button.btn-primary:hover {
                         Account&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a id="admin1" class="dropdown-item" href="Profile.php" id="profileLink">
+                        <a id="admin1" class="dropdown-item" href="Acc_Credentials.php" id="profileLink">
                             <img src="Header_Images/account.png" alt="Icon" />
                             Profile</a>
                       

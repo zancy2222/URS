@@ -20,7 +20,9 @@ if (isset($_SESSION['office_id'])) {
     $stmt->fetch();
     $stmt->close();
 }
-
+// Fetch facilities from the database
+$sql = "SELECT name FROM facilities";
+$result = $conn->query($sql);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -285,7 +287,7 @@ if (isset($_SESSION['office_id'])) {
                         Account&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a id="admin1" class="dropdown-item" href="Profile.php" id="profileLink">
+                        <a id="admin1" class="dropdown-item" href="Acc_Credentials.php" id="profileLink">
                             <img src="Header_Images/account.png" alt="Icon" />
                             Profile</a>
 
@@ -335,11 +337,20 @@ if (isset($_SESSION['office_id'])) {
                     <label for="facilityFilter" class="form-label">Filter by Facility</label>
                     <select id="facilityFilter" class="form-select">
                         <option value="all">All Facilities</option>
-                        <option value="EARTS">EARTS</option>
-                        <option value="FUNCTION HALL">FUNCTION HALL</option>
-                        <option value="GYMNASIUM">GYMNASIUM</option>
-                        <option value="QUADRANGLE">QUADRANGLE</option>
-                        <option value="AVEC">AVEC</option>
+
+                        <?php
+                        // Check if there are results
+                        if ($result->num_rows > 0) {
+                            // Output data for each row
+                            while ($row = $result->fetch_assoc()) {
+                                // Use htmlspecialchars to prevent XSS attacks
+                                $facility_name = htmlspecialchars($row['name']);
+                                echo "<option value=\"$facility_name\">$facility_name</option>";
+                            }
+                        } else {
+                            echo "<option value=\"\">No facilities available</option>"; // Optional: Handle no results
+                        }
+                        ?>
                     </select>
                 </div>
                 <div class="upcoming-events-section">
@@ -407,11 +418,20 @@ if (isset($_SESSION['office_id'])) {
                         <div class="form-group">
                             <label for="facility">Facility</label>
                             <select class="form-control" id="facility" name="facility" required>
-                                <option value="EARTS">EARTS</option>
-                                <option value="FUNCTION HALL">FUNCTION HALL</option>
-                                <option value="GYMNASIUM">GYMNASIUM</option>
-                                <option value="QUADRANGLE">QUADRANGLE</option>
-                                <option value="AVEC">AVEC</option>
+                                <option value="">Select a facility</option> <!-- Optional: Default option -->
+                                <?php
+                                // Check if there are results
+                                if ($result->num_rows > 0) {
+                                    // Output data for each row
+                                    while ($row = $result->fetch_assoc()) {
+                                        // Use htmlspecialchars to prevent XSS attacks
+                                        $facility_name = htmlspecialchars($row['name']);
+                                        echo "<option value=\"$facility_name\">$facility_name</option>";
+                                    }
+                                } else {
+                                    echo "<option value=\"\">No facilities available</option>"; // Optional: Handle no results
+                                }
+                                ?>
                             </select>
                         </div>
                         <div class="form-group">
@@ -527,28 +547,28 @@ if (isset($_SESSION['office_id'])) {
 
             // Fetch events from the server
             fetch('../partials/fetch_events.php')
-        .then(response => response.json())
-        .then(events => {
-            events.forEach(event => {
-                const endDate = new Date(event.end_date);
-                endDate.setDate(endDate.getDate());
+                .then(response => response.json())
+                .then(events => {
+                    events.forEach(event => {
+                        const endDate = new Date(event.end_date);
+                        endDate.setDate(endDate.getDate());
 
-                // Add all events to the calendar
-                calendar.addEvent({
-                    title: event.event_name,
-                    start: `${event.start_date}T${event.start_time}`, // Include the time
-                    end: `${event.end_date}T${event.end_time}`, // Include the time
-                    extendedProps: {
-                        facility: event.facility,
-                        description: event.event_description,
-                        status: event.status
-                    },
-                    color: getColorBasedOnStatus(event.status)
-                });
+                        // Add all events to the calendar
+                        calendar.addEvent({
+                            title: event.event_name,
+                            start: `${event.start_date}T${event.start_time}`, // Include the time
+                            end: `${event.end_date}T${event.end_time}`, // Include the time
+                            extendedProps: {
+                                facility: event.facility,
+                                description: event.event_description,
+                                status: event.status
+                            },
+                            color: getColorBasedOnStatus(event.status)
+                        });
 
-                // Only populate the upcoming events table if status is "Approve"
-                if (event.status === 'Approve') {
-                    $('#upcomingEventsBody').append(`
+                        // Only populate the upcoming events table if status is "Approve"
+                        if (event.status === 'Approve') {
+                            $('#upcomingEventsBody').append(`
                         <tr>
                             <td><a href="#" class="event-link" 
                                 data-event-name="${event.event_name}" 
@@ -566,10 +586,10 @@ if (isset($_SESSION['office_id'])) {
                             <td><span class="legend-color status-${event.status.toLowerCase()}"></span>${event.status}</td>
                         </tr>
                     `);
-                }
-            });
-            calendar.render();
-        });
+                        }
+                    });
+                    calendar.render();
+                });
 
             function getColorBasedOnStatus(status) {
                 switch (status) {

@@ -8,37 +8,38 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 1) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>URSMFEMSS Homepage</title>
     <!--BOOTSTRAP LINK-->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-
-        @font-face { 
-        font-family: "Hussar Bold Web Edition";
-        src: url("https://db.onlinewebfonts.com/t/60020c76d48f22e20a23b37c056cb339.eot");
-        src: url("https://db.onlinewebfonts.com/t/60020c76d48f22e20a23b37c056cb339.eot?#iefix")format("embedded-opentype"),
-        url("https://db.onlinewebfonts.com/t/60020c76d48f22e20a23b37c056cb339.woff2")format("woff2"),
-        url("https://db.onlinewebfonts.com/t/60020c76d48f22e20a23b37c056cb339.woff")format("woff"),
-        url("https://db.onlinewebfonts.com/t/60020c76d48f22e20a23b37c056cb339.ttf")format("truetype"),
-        url("https://db.onlinewebfonts.com/t/60020c76d48f22e20a23b37c056cb339.svg#Hussar Bold Web Edition")format("svg");
+        @font-face {
+            font-family: "Hussar Bold Web Edition";
+            src: url("https://db.onlinewebfonts.com/t/60020c76d48f22e20a23b37c056cb339.eot");
+            src: url("https://db.onlinewebfonts.com/t/60020c76d48f22e20a23b37c056cb339.eot?#iefix")format("embedded-opentype"),
+                url("https://db.onlinewebfonts.com/t/60020c76d48f22e20a23b37c056cb339.woff2")format("woff2"),
+                url("https://db.onlinewebfonts.com/t/60020c76d48f22e20a23b37c056cb339.woff")format("woff"),
+                url("https://db.onlinewebfonts.com/t/60020c76d48f22e20a23b37c056cb339.ttf")format("truetype"),
+                url("https://db.onlinewebfonts.com/t/60020c76d48f22e20a23b37c056cb339.svg#Hussar Bold Web Edition")format("svg");
         }
 
         .navbar-brand {
             font-family: Hussar Bold Web Edition;
-        }  
+        }
 
         #mainNavbar {
             height: auto;
         }
-            
+
         #mainNavbar .navbar-brand {
             font-size: 1em;
-        } 
+        }
 
         .bg-primary-custom {
             background-color: #004AAD !important;
@@ -48,242 +49,131 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 1) {
             background-color: white;
             font-size: 12px;
         }
-        
+
         #mainNavbar .navbar-nav .nav-item .nav-link {
-            color:#004AAD;
-            padding:2px;
-            padding-left:5px;
+            color: #004AAD;
+            padding: 2px;
+            padding-left: 5px;
             width: 180px;
             height: 25px;
         }
 
         #mainNavbar .navbar-nav .nav-item .nav-link img {
-            width: 20px; height: 20px;
+            width: 20px;
+            height: 20px;
         }
 
         #mainNavbar .dropdown-menu .dropdown-item {
-            font-size: 13px; color: #004AAD; padding: 0px; margin-right:5px;
+            font-size: 13px;
+            color: #004AAD;
+            padding: 0px;
+            margin-right: 5px;
         }
-        
+
         .dropdown-item {
             font-size: 12px;
         }
 
         /*dropdown images sizing*/
         #mainNavbar .dropdown-menu .dropdown-item img {
-            width: 20px; height: 20px; margin:5px;
+            width: 20px;
+            height: 20px;
+            margin: 5px;
         }
 
         .navbar-nav .nav-item {
-            margin-right: 15px; 
+            margin-right: 15px;
         }
 
         @media only screen and (max-width: 960px) {
-        #mainNavbar .navbar-brand {
-            font-size: 1em;
+            #mainNavbar .navbar-brand {
+                font-size: 1em;
+                font-weight: bold;
+            }
+
+            .navbar-nav .nav-item .nav-link {
+                background-color: white;
+                font-size: 12px;
+            }
+
+            .dropdown-item {
+                font-size: 10px;
+            }
+
+            .navbar-nav .nav-item {
+                margin-right: 5px;
+            }
+        }
+
+        .nav-tabs .nav-link {
+            color: #004AAD;
             font-weight: bold;
-        } 
-
-        .navbar-nav .nav-item .nav-link {
-            background-color: white;
-            font-size: 12px;
-        }
-        
-        .dropdown-item {
-            font-size: 10px;
+            padding: 10px 20px;
         }
 
-        .navbar-nav .nav-item {
-            margin-right: 5px; 
-        }
-        }
-
-        
-        .legend-section {
-            margin-top: 20px;
-        }
-
-        .legend-title {
-            font-family: 'Arial', sans-serif;
-            font-weight: bold;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 5px;
-        }
-
-        .legend-color {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 8px;
-        }
-
-        .status-approve {
-            background-color: green;
-        }
-
-        .status-pending {
-            background-color: blue;
-        }
-
-        .status-reject {
-            background-color: red;
-        }
-
-        .status-onhold {
-            background-color: orange;
-        }
-
-        .upcoming-events-section {
+        .nav-tabs .nav-link.active {
             background-color: #004AAD;
             color: white;
-            padding: 15px;
         }
 
-        .event-list {
-            height: 300px;
-            overflow-y: auto;
-            background-color: white;
-            color: white;
-            padding: 15px;
-            margin-top: 10px;
-        }
-
-        .table {
+        /* Styling for account holders and facilities info cards */
+        .info-card {
+            border: 1px solid #004AAD;
+            border-radius: 4px;
             margin-top: 15px;
-            background-color: white;
         }
 
-        /* Dropdown container styling */
-        .mb-3 {
-            margin-bottom: 1.5rem;
-            /* Adjust spacing as needed */
-        }
-
-        /* Label styling */
-        .form-label {
-            font-family: 'Microsoft Sans Serif', sans-serif;
-            /* Font family */
+        .info-card-header {
+            background-color: #004AAD;
+            color: white;
+            font-weight: bold;
+            padding: 10px;
             font-size: 16px;
-            /* Font size */
-            font-weight: 600;
-            /* Font weight */
-            color: #333;
-            /* Label color */
-            margin-bottom: 0.5rem;
-            /* Space between label and dropdown */
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
         }
 
-        /* Dropdown select styling */
-        .form-select {
-            display: block;
-            /* Ensures the select takes full width */
-            width: 100%;
-            /* Full width */
-            padding: 0.375rem 0.75rem;
-            /* Padding inside the dropdown */
+        .info-card-body {
+            padding: 10px;
             font-size: 14px;
-            /* Font size */
-            line-height: 1.5;
-            /* Line height */
-            color: #495057;
-            /* Text color */
-            background-color: #fff;
-            /* Background color */
-            background-clip: padding-box;
-            /* Background clip */
-            border: 1px solid #ced4da;
-            /* Border color */
-            border-radius: 0.375rem;
-            /* Border radius */
-            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-            /* Transition effects */
+            font-family: Arial, sans-serif;
         }
 
-        /* Dropdown focus styling */
-        .form-select:focus {
-            border-color: #80bdff;
-            /* Border color on focus */
-            outline: 0;
-            /* Remove default outline */
-            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-            /* Box shadow on focus */
+        /* Styling for the Add button */
+        .add-button {
+            background-color: #004AAD;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
         }
 
-        /* Option styling */
-        .form-select option {
-            color: #495057;
-            /* Option text color */
+        .add-button i {
+            margin-right: 5px;
         }
 
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .form-label {
-                font-size: 14px;
-                /* Smaller font on mobile */
-            }
-
-            .form-select {
-                font-size: 12px;
-                /* Smaller font on mobile */
-            }
+        /* Icon buttons */
+        .icon-buttons {
+            display: inline-flex;
+            gap: 5px;
         }
-/* Form container styling */
-#registrationForm {
-    background-color: #f9f9f9;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
 
-/* Form labels */
-#registrationForm label {
-    font-weight: 500;
-    color: #333;
-    margin-bottom: 5px;
-    display: block;
-}
+        .icon-buttons .btn {
+            border-radius: 50%;
+            padding: 2px 5px;
+            font-size: 14px;
+            color: white;
+        }
 
-/* Form inputs and selects */
-#registrationForm input, 
-#registrationForm select {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 16px;
-}
+        .icon-buttons .btn-success {
+            background-color: #28a745;
+        }
 
-/* Focus state */
-#registrationForm input:focus, 
-#registrationForm select:focus {
-    outline: none;
-    border-color: #ff4d6d;
-    box-shadow: 0 0 5px rgba(255, 77, 109, 0.5);
-}
-
-/* Responsive styles for smaller screens */
-@media (max-width: 576px) {
-    #registrationForm {
-        padding: 20px;
-    }
-
-    #registrationForm input, 
-    #registrationForm select {
-        font-size: 14px;
-    }
-
-    #registrationForm button {
-        font-size: 14px;
-    }
-}
-
+        .icon-buttons .btn-danger {
+            background-color: #dc3545;
+        }
     </style>
 
 
@@ -291,7 +181,7 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 1) {
 
 <body class="d-flexbox vw-100 vh-100">
 
-    <!--HEADER-->        
+    <!--HEADER-->
     <!-- First Navigation Bar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary-custom" id="mainNavbar">
         <a class="navbar-brand" href="index.php">University of Rizal System - Morong Facilities E-Monitoring and Scheduling System</a>
@@ -302,21 +192,21 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 1) {
 
         <div class="collapse navbar-collapse navbar-expand" id="navbarSupportedContent">
             <ul class="ml-auto navbar-nav">
-            <?php if (!isset($_SESSION['is_osds']) || !$_SESSION['is_osds']): ?>
-    <li id="vbr" class="nav-item">
-        <a class="nav-link rounded-pill" href="view_booking.php">
-            <img src="Header_Images/vbr.png" alt="Icon" />
-            View Booking Requests
-        </a>
-    </li>
+                <?php if (!isset($_SESSION['is_osds']) || !$_SESSION['is_osds']): ?>
+                    <li id="vbr" class="nav-item">
+                        <a class="nav-link rounded-pill" href="view_booking.php">
+                            <img src="Header_Images/vbr.png" alt="Icon" />
+                            View Booking Requests
+                        </a>
+                    </li>
 
-    <li id="pbr" class="nav-item">
-        <a class="nav-link rounded-pill" href="Process_booking.php">
-            <img src="Header_Images/pbr.png" alt="Icon" />
-            Process Booking Requests
-        </a>
-    </li>
-<?php endif; ?>
+                    <li id="pbr" class="nav-item">
+                        <a class="nav-link rounded-pill" href="Process_booking.php">
+                            <img src="Header_Images/pbr.png" alt="Icon" />
+                            Process Booking Requests
+                        </a>
+                    </li>
+                <?php endif; ?>
 
                 <li id="acc" class="nav-item dropdown">
                     <a class="nav-link rounded-pill dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -324,7 +214,7 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 1) {
                         Account&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a id="admin1" class="dropdown-item" href="Profile.php" id="profileLink">
+                        <a id="admin1" class="dropdown-item" href="Acc_Credentials.php" id="profileLink">
                             <img src="Header_Images/account.png" alt="Icon" />
                             Profile</a>
                         <?php if (isset($_SESSION['is_osds']) && $_SESSION['is_osds']): ?>
@@ -345,109 +235,276 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 1) {
         </div>
     </nav>
     <div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-            <form id="registrationForm" action="register.php" method="POST"> 
-                <label for="username">Username:</label>
-                <input type="text" name="username" required><br>
+        <!-- Tabs for Accounts and Facilities -->
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="accounts-tab" data-toggle="tab" href="#accounts" role="tab" aria-controls="accounts" aria-selected="true">ACCOUNTS</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="facilities-tab" data-toggle="tab" href="#facilities" role="tab" aria-controls="facilities" aria-selected="false">FACILITIES</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <!-- Accounts Tab Content -->
+            <!-- Accounts tab with Account Holders Table -->
+            <div class="tab-pane fade show active" id="accounts" role="tabpanel" aria-labelledby="accounts-tab">
+                <div class="info-card">
+                    <div class="info-card-header">ACCOUNT HOLDERS:</div>
+                    <div class="info-card-body">
+                        <?php
+                        include 'partials/db_conn.php';
 
-                <label for="account_type">Account Type:</label>
-                <select name="account_type" id="account_type" required>
-                    <option value="">Select Account Type</option>
-                    <option value="1">Admin</option>
-                    <option value="2">Student Leader</option>
-                    <option value="3">Office</option>
-                </select><br>
+                        // Fetch all account details without password
+                        $sql = "
+    SELECT u.id, u.username, at.account_type, 
+           COALESCE(a.account_name, cd.department_name, o.office_name) AS account_name,
+           CASE
+               WHEN a.account_name IS NOT NULL THEN 'Admin'
+               WHEN cd.department_name IS NOT NULL THEN 'Student Leader'
+               WHEN o.office_name IS NOT NULL THEN 'Office'
+           END AS display_type
+    FROM users u
+    JOIN account_type at ON u.account_type_id = at.id
+    LEFT JOIN admin_account a ON u.admin_account_id = a.id
+    LEFT JOIN college_department cd ON u.department_id = cd.id
+    LEFT JOIN office o ON u.office_id = o.id;
+";
+                        $result = $conn->query($sql);
+                        ?>
 
-                <!-- Admin Account (if Admin) -->
-                <div id="admin_fields" style="display: none;">
-                    <label for="admin_account">Admin Account:</label>
-                    <select name="admin_account" id="admin_account">
-                        <!-- Admin accounts will be populated via AJAX -->
-                    </select><br>
+                        <table class="table table-borderless">
+                            <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Account Type</th>
+                                    <th>Account Name</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php while ($row = $result->fetch_assoc()): ?>
+                                    <tr>
+                                        <td><?php echo htmlspecialchars($row['username']); ?></td>
+                                        <td><?php echo htmlspecialchars($row['display_type']); ?></td>
+                                        <td><?php echo htmlspecialchars($row['account_name']); ?></td>
+                                        <td class="icon-buttons">
+                                            <button class="btn btn-primary edit-btn" data-id="<?php echo $row['id']; ?>" data-username="<?php echo $row['username']; ?>" data-display-type="<?php echo $row['display_type']; ?>" data-toggle="modal" data-target="#editAccountModal"><i class="fas fa-edit"></i></button>
+                                            <button class="btn btn-danger delete-btn" data-id="<?php echo $row['id']; ?>" data-toggle="modal" data-target="#deleteAccountModal"><i class="fas fa-trash-alt"></i></button>
+                                        </td>
+                                    </tr>
+                                <?php endwhile; ?>
+                            </tbody>
+                        </table>
+
+                        <?php
+                        $conn->close();
+                        ?>
+
+
+                        <button class="add-button" data-toggle="modal" data-target="#addAccountModal"><i class="fas fa-plus"></i> Add Account Holders</button>
+                    </div>
                 </div>
+            </div>
 
-                <!-- College and Org (if Student Leader) -->
-                <div id="student_leader_fields" style="display: none;">
-                    <label for="department">College Department:</label>
-                    <select name="department" id="department">
-                        <!-- Departments will be populated via AJAX -->
-                    </select><br>
-
-                    <label for="org">Organization:</label>
-                    <select name="org" id="org">
-                        <!-- Organizations will be populated based on the department selection via AJAX -->
-                    </select><br>
+            <!-- Edit Account Modal -->
+            <!-- Edit Account Modal -->
+            <div class="modal fade" id="editAccountModal" tabindex="-1" aria-labelledby="editAccountModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editAccountModalLabel">Edit Account</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="editAccountForm" action="partials/update_account.php" method="POST">
+                                <input type="hidden" name="user_id" id="editUserId">
+                                <div class="form-group">
+                                    <label for="editUsername">Username</label>
+                                    <input type="text" class="form-control" id="editUsername" name="username" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editAccountType">Account Type</label>
+                                    <input type="text" class="form-control" id="editAccountType" name="account_type" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editPassword">Password</label>
+                                    <input type="password" class="form-control" id="editPassword" name="password" placeholder="Leave blank to keep unchanged">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
+            </div>
 
-                <!-- Office (if Office) -->
-                <div id="office_fields" style="display: none;">
-                    <label for="office">Office:</label>
-                    <select name="office" id="office">
-                        <!-- Offices will be populated via AJAX -->
-                    </select><br>
+            <!-- Add Account Modal -->
+            <div class="modal fade" id="addAccountModal" tabindex="-1" aria-labelledby="addAccountModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addAccountModalLabel">Add Account Holder</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="registrationForm" action="register.php" method="POST">
+                                <div class="form-group">
+                                    <label for="username">Username:</label>
+                                    <input type="text" name="username" class="form-control" required><br>
+                                </div>
+                                <div class="form-group">
+                                    <label for="account_type">Account Type:</label>
+                                    <select name="account_type" id="account_type" class="form-control" required>
+                                        <option value="">Select Account Type</option>
+                                        <option value="1">Admin</option>
+                                        <option value="2">Student Leader</option>
+                                        <option value="3">Office</option>
+                                    </select><br>
+                                </div>
+                                <!-- Admin Account (if Admin) -->
+                                <div id="admin_fields" style="display: none;">
+                                    <label for="admin_account">Admin Account:</label>
+                                    <select name="admin_account" id="admin_account" class="form-control">
+                                        <!-- Admin accounts will be populated via AJAX -->
+                                    </select><br>
+                                </div>
+                                <!-- College and Org (if Student Leader) -->
+                                <div id="student_leader_fields" style="display: none;">
+                                    <label for="department">College Department:</label>
+                                    <select name="department" id="department" class="form-control">
+                                        <!-- Departments will be populated via AJAX -->
+                                    </select><br>
+
+                                    <label for="org">Organization:</label>
+                                    <select name="org" id="org" class="form-control">
+                                        <!-- Organizations will be populated based on the department selection via AJAX -->
+                                    </select><br>
+                                </div>
+                                <!-- Office (if Office) -->
+                                <div id="office_fields" style="display: none;">
+                                    <label for="office">Office:</label>
+                                    <select name="office" id="office" class="form-control">
+                                        <!-- Offices will be populated via AJAX -->
+                                    </select><br>
+                                </div>
+                                <div class="form-group">
+                                    <label for="password">Password:</label>
+                                    <input type="password" name="password" class="form-control" required><br>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Register</button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
+            </div>
+            <div class="modal fade" id="deleteAccountModal" tabindex="-1" role="dialog" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <form action="partials/delete_account.php" method="POST">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteAccountModalLabel">Confirm Delete</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Are you sure you want to delete this account?</p>
+                                <!-- Hidden field to store the account ID -->
+                                <input type="hidden" name="id" id="deleteAccountId" value="">
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
 
-                <label for="password">Password:</label>
-                <input type="password" name="password" required><br>
+            <!-- Success Modal -->
+            <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="successModalLabel">Registration Successful</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            Your account has been successfully registered.
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-                <button type="submit" class="btn btn-primary btn-block">Register</button>
-            </form>
+            <!-- Error Modal -->
+            <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="errorModalLabel">Registration Error</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <?php echo $_SESSION['registration_error']; ?>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="adminAccessModal" tabindex="-1" aria-labelledby="adminAccessModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="adminAccessModalLabel">Access Restricted</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Only Office (GSO) can access this section.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-<!-- Bootstrap Modal for Success -->
-<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="successModalLabel">Registration Successful</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        Your account has been successfully registered.
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-      </div>
+        </div>
     </div>
-  </div>
-</div>
-
-<!-- Bootstrap Modal for Error -->
-<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="errorModalLabel">Registration Error</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <?php echo $_SESSION['registration_error']; ?>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-
-</div>
 
     <!-- FullCalendar JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // Simulated admin check - replace this with your actual admin checking logic
+        const isAdmin = false; // Change to true if the user is an admin
 
-
-<script>
+        document.getElementById('facilities-tab').addEventListener('click', function(event) {
+            if (!isAdmin) {
+                event.preventDefault(); // Prevent tab from changing
+                $('#adminAccessModal').modal('show'); // Show admin access modal
+            }
+        });
+    </script>
+    <script>
         $(document).ready(function() {
             $('#account_type').change(function() {
                 var accountType = $(this).val();
@@ -459,7 +516,9 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 1) {
                     $.ajax({
                         url: 'get_data.php',
                         type: 'POST',
-                        data: { account_type: accountType },
+                        data: {
+                            account_type: accountType
+                        },
                         success: function(response) {
                             $('#admin_account').html(response);
                         }
@@ -472,7 +531,9 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 1) {
                     $.ajax({
                         url: 'get_data.php',
                         type: 'POST',
-                        data: { account_type: accountType },
+                        data: {
+                            account_type: accountType
+                        },
                         success: function(response) {
                             $('#department').html(response);
                         }
@@ -485,7 +546,9 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 1) {
                     $.ajax({
                         url: 'get_data.php',
                         type: 'POST',
-                        data: { account_type: accountType },
+                        data: {
+                            account_type: accountType
+                        },
                         success: function(response) {
                             $('#office').html(response);
                         }
@@ -503,7 +566,9 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 1) {
                 $.ajax({
                     url: 'get_data.php',
                     type: 'POST',
-                    data: { department_id: departmentId },
+                    data: {
+                        department_id: departmentId
+                    },
                     success: function(response) {
                         $('#org').html(response);
                     }
@@ -511,27 +576,57 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 1) {
             });
         });
     </script>
+    <script>
+        $(document).ready(function() {
+            // Show success or error modals if session flags are set
+            <?php if (isset($_SESSION['registration_success']) && $_SESSION['registration_success']): ?>
+                $('#successModal').modal('show');
+                <?php unset($_SESSION['registration_success']); ?>
+            <?php endif; ?>
 
-<script>
-// Check if the session has a success or error message and show the modal
-<?php if (isset($_SESSION['registration_success']) && $_SESSION['registration_success']): ?>
-    $(document).ready(function() {
-        // Show the success modal
-        $('#successModal').modal('show');
-    });
-    // Unset the session variable so that the modal does not show again on refresh
-    <?php unset($_SESSION['registration_success']); ?>
-<?php endif; ?>
+            <?php if (isset($_SESSION['registration_error'])): ?>
+                $('#errorModal').modal('show');
+                <?php unset($_SESSION['registration_error']); ?>
+            <?php endif; ?>
 
-<?php if (isset($_SESSION['registration_error'])): ?>
-    $(document).ready(function() {
-        // Show the error modal
-        $('#errorModal').modal('show');
-    });
-    // Unset the session variable so that the modal does not show again on refresh
-    <?php unset($_SESSION['registration_error']); ?>
-<?php endif; ?>
-</script>
+            // Additional JavaScript for dynamic field display based on account type
+            $('#account_type').change(function() {
+                var accountType = $(this).val();
+                $('#admin_fields, #student_leader_fields, #office_fields').hide();
+                if (accountType == '1') {
+                    $('#admin_fields').show();
+                    // Load admin account options via AJAX
+                } else if (accountType == '2') {
+                    $('#student_leader_fields').show();
+                    // Load college department options via AJAX
+                } else if (accountType == '3') {
+                    $('#office_fields').show();
+                    // Load office options via AJAX
+                }
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('.edit-btn').on('click', function() {
+                var userId = $(this).data('id');
+                var username = $(this).data('username');
+                var displayType = $(this).data('display-type');
+
+                $('#editUserId').val(userId);
+                $('#editUsername').val(username);
+                $('#editAccountType').val(displayType);
+                $('#editPassword').val('');
+            });
+        });
+    </script>
+    <script>
+        $(document).on("click", ".delete-btn", function() {
+            var accountId = $(this).data("id");
+            $("#deleteAccountId").val(accountId);
+        });
+    </script>
 
 </body>
+
 </html>

@@ -85,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Execute the update and check for errors
         if ($stmt->execute()) {
             echo "Profile updated successfully!";
-            header("Location: Profile.php");
+            header("Location: Acc_Credentials.php");
             exit();
         } else {
             echo "Failed to update profile. Error: " . $stmt->error;
@@ -427,7 +427,7 @@ button.btn-primary:hover {
                         Account&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a id="admin1" class="dropdown-item" href="Profile.php" id="profileLink">
+                        <a id="admin1" class="dropdown-item" href="Acc_Credentials.php" id="profileLink">
                             <img src="Header_Images/account.png" alt="Icon" />
                             Profile</a>
                             
@@ -449,7 +449,7 @@ button.btn-primary:hover {
    
 <div class="container">
     <h1>Upload Documents</h1>
-    <form method="POST" action="Profile.php" id="profileForm" enctype="multipart/form-data">
+    <form method="POST" action="Acc_Credentials.php" id="profileForm" enctype="multipart/form-data">
         <div class="form-group">
             <label for="letter_of_request">Letter of Request</label>
             <input type="file" class="form-control" id="letter_of_request" name="letter_of_request" >

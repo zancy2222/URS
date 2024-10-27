@@ -84,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Execute the update and check for errors
         if ($stmt->execute()) {
             echo "Profile updated successfully!";
-            header("Location: Profile.php");
+            header("Location: Acc_Credentials.php");
             exit();
         } else {
             echo "Failed to update profile. Error: " . $stmt->error;
@@ -436,7 +436,7 @@ button.btn-primary:hover {
                         Account&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a id="admin1" class="dropdown-item" href="Profile.php" id="profileLink">
+                        <a id="admin1" class="dropdown-item" href="Acc_Credentials.php" id="profileLink">
                             <img src="Header_Images/account.png" alt="Icon" />
                             Profile</a>
                         <?php if (isset($_SESSION['is_osds']) && $_SESSION['is_osds']): ?>
@@ -458,7 +458,7 @@ button.btn-primary:hover {
     </nav>
     <div class="container">
     <h1>Upload Documents</h1>
-    <form method="POST" action="Profile.php" id="profileForm" enctype="multipart/form-data">
+    <form method="POST" action="Acc_Credentials.php" id="profileForm" enctype="multipart/form-data">
         <input type="hidden" name="event_id" value="<?php echo $event_id; ?>"> <!-- Include hidden event ID -->
 
         <div class="form-group">

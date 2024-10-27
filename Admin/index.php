@@ -20,6 +20,9 @@ if (isset($_SESSION['admin_account_id'])) {
     $stmt->fetch();
     $stmt->close();
 }
+// Fetch facilities from the database
+$sql = "SELECT name FROM facilities";
+$result = $conn->query($sql);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -293,7 +296,7 @@ if (isset($_SESSION['admin_account_id'])) {
                         Account&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a id="admin1" class="dropdown-item" href="Profile.php" id="profileLink">
+                        <a id="admin1" class="dropdown-item" href="Acc_Credentials.php" id="profileLink">
                             <img src="Header_Images/account.png" alt="Icon" />
                             Profile</a>
                         <?php if (isset($_SESSION['is_osds']) && $_SESSION['is_osds']): ?>
@@ -346,11 +349,20 @@ if (isset($_SESSION['admin_account_id'])) {
                     <label for="facilityFilter" class="form-label">Filter by Facility</label>
                     <select id="facilityFilter" class="form-select">
                         <option value="all">All Facilities</option>
-                        <option value="EARTS">EARTS</option>
-                        <option value="FUNCTION HALL">FUNCTION HALL</option>
-                        <option value="GYMNASIUM">GYMNASIUM</option>
-                        <option value="QUADRANGLE">QUADRANGLE</option>
-                        <option value="AVEC">AVEC</option>
+
+                        <?php
+                        // Check if there are results
+                        if ($result->num_rows > 0) {
+                            // Output data for each row
+                            while ($row = $result->fetch_assoc()) {
+                                // Use htmlspecialchars to prevent XSS attacks
+                                $facility_name = htmlspecialchars($row['name']);
+                                echo "<option value=\"$facility_name\">$facility_name</option>";
+                            }
+                        } else {
+                            echo "<option value=\"\">No facilities available</option>"; // Optional: Handle no results
+                        }
+                        ?>
                     </select>
                 </div>
                 <div class="upcoming-events-section">
@@ -418,11 +430,20 @@ if (isset($_SESSION['admin_account_id'])) {
                         <div class="form-group">
                             <label for="facility">Facility</label>
                             <select class="form-control" id="facility" name="facility" required>
-                                <option value="EARTS">EARTS</option>
-                                <option value="FUNCTION HALL">FUNCTION HALL</option>
-                                <option value="GYMNASIUM">GYMNASIUM</option>
-                                <option value="QUADRANGLE">QUADRANGLE</option>
-                                <option value="AVEC">AVEC</option>
+                                <option value="">Select a facility</option> <!-- Optional: Default option -->
+                                <?php
+                                // Check if there are results
+                                if ($result->num_rows > 0) {
+                                    // Output data for each row
+                                    while ($row = $result->fetch_assoc()) {
+                                        // Use htmlspecialchars to prevent XSS attacks
+                                        $facility_name = htmlspecialchars($row['name']);
+                                        echo "<option value=\"$facility_name\">$facility_name</option>";
+                                    }
+                                } else {
+                                    echo "<option value=\"\">No facilities available</option>"; // Optional: Handle no results
+                                }
+                                ?>
                             </select>
                         </div>
                         <div class="form-group">
@@ -508,52 +529,52 @@ if (isset($_SESSION['admin_account_id'])) {
         });
     </script>
     <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const calendarEl = document.getElementById('calendar');
-    const calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
-        events: [],
+        document.addEventListener('DOMContentLoaded', function() {
+            const calendarEl = document.getElementById('calendar');
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                events: [],
 
-        eventClick: function(info) {
-            // Show the event details in the modal for calendar events
-            $('#eventDetailName').text(info.event.title);
-            $('#eventDetailStartDate').text(info.event.start.toLocaleDateString());
-            $('#eventDetailEndDate').text(info.event.end ? info.event.end.toLocaleDateString() : 'N/A');
-            $('#eventDetailStartTime').text(info.event.start.toLocaleTimeString());
-            $('#eventDetailEndTime').text(info.event.end ? info.event.end.toLocaleTimeString() : 'N/A');
-            $('#eventDetailFacility').text(info.event.extendedProps.facility);
-            $('#eventDetailDescription').text(info.event.extendedProps.description);
-            $('#eventDetailStatus').text(info.event.extendedProps.status);
+                eventClick: function(info) {
+                    // Show the event details in the modal for calendar events
+                    $('#eventDetailName').text(info.event.title);
+                    $('#eventDetailStartDate').text(info.event.start.toLocaleDateString());
+                    $('#eventDetailEndDate').text(info.event.end ? info.event.end.toLocaleDateString() : 'N/A');
+                    $('#eventDetailStartTime').text(info.event.start.toLocaleTimeString());
+                    $('#eventDetailEndTime').text(info.event.end ? info.event.end.toLocaleTimeString() : 'N/A');
+                    $('#eventDetailFacility').text(info.event.extendedProps.facility);
+                    $('#eventDetailDescription').text(info.event.extendedProps.description);
+                    $('#eventDetailStatus').text(info.event.extendedProps.status);
 
-            // Open the modal
-            $('#eventDetailsModal').modal('show');
-        }
-    });
+                    // Open the modal
+                    $('#eventDetailsModal').modal('show');
+                }
+            });
 
-    // Fetch events from the server
-    fetch('../partials/fetch_events.php')
-        .then(response => response.json())
-        .then(events => {
-            events.forEach(event => {
-                const endDate = new Date(event.end_date);
-                endDate.setDate(endDate.getDate());
+            // Fetch events from the server
+            fetch('../partials/fetch_events.php')
+                .then(response => response.json())
+                .then(events => {
+                    events.forEach(event => {
+                        const endDate = new Date(event.end_date);
+                        endDate.setDate(endDate.getDate());
 
-                // Add all events to the calendar
-                calendar.addEvent({
-                    title: event.event_name,
-                    start: `${event.start_date}T${event.start_time}`, // Include the time
-                    end: `${event.end_date}T${event.end_time}`, // Include the time
-                    extendedProps: {
-                        facility: event.facility,
-                        description: event.event_description,
-                        status: event.status
-                    },
-                    color: getColorBasedOnStatus(event.status)
-                });
+                        // Add all events to the calendar
+                        calendar.addEvent({
+                            title: event.event_name,
+                            start: `${event.start_date}T${event.start_time}`, // Include the time
+                            end: `${event.end_date}T${event.end_time}`, // Include the time
+                            extendedProps: {
+                                facility: event.facility,
+                                description: event.event_description,
+                                status: event.status
+                            },
+                            color: getColorBasedOnStatus(event.status)
+                        });
 
-                // Only populate the upcoming events table if status is "Approve"
-                if (event.status === 'Approve') {
-                    $('#upcomingEventsBody').append(`
+                        // Only populate the upcoming events table if status is "Approve"
+                        if (event.status === 'Approve') {
+                            $('#upcomingEventsBody').append(`
                         <tr>
                             <td><a href="#" class="event-link" 
                                 data-event-name="${event.event_name}" 
@@ -571,85 +592,84 @@ document.addEventListener('DOMContentLoaded', function() {
                             <td><span class="legend-color status-${event.status.toLowerCase()}"></span>${event.status}</td>
                         </tr>
                     `);
+                        }
+                    });
+                    calendar.render();
+                });
+
+            function getColorBasedOnStatus(status) {
+                switch (status) {
+                    case 'Approve':
+                        return 'green';
+                    case 'Pending':
+                        return 'blue';
+                    case 'Reject':
+                        return 'red';
+                    case 'On Hold':
+                        return 'orange';
+                    default:
+                        return 'gray';
+                }
+            }
+
+            // Facility filter
+            document.getElementById('facilityFilter').addEventListener('change', function() {
+                const selectedFacility = this.value;
+
+                calendar.getEvents().forEach(event => {
+                    if (selectedFacility === 'all' || event.extendedProps.facility === selectedFacility) {
+                        event.setProp('display', 'auto');
+                    } else {
+                        event.setProp('display', 'none');
+                    }
+                });
+            });
+
+            // Helper function to format time to 12-hour format
+            function formatTimeTo12Hour(time) {
+                const [hours, minutes] = time.split(':');
+                let hours12 = parseInt(hours, 10);
+                const ampm = hours12 >= 12 ? 'PM' : 'AM';
+
+                if (hours12 > 12) {
+                    hours12 -= 12;
+                } else if (hours12 === 0) {
+                    hours12 = 12; // Convert 0 to 12 for midnight
+                }
+
+                return `${hours12}:${minutes} ${ampm}`;
+            }
+
+            // Add click event listener for event links in the upcoming events table
+            document.getElementById('upcomingEventsBody').addEventListener('click', function(event) {
+                if (event.target.classList.contains('event-link')) {
+                    event.preventDefault();
+
+                    const eventName = event.target.getAttribute('data-event-name');
+                    const startDate = event.target.getAttribute('data-start-date');
+                    const startTime = event.target.getAttribute('data-start-time');
+                    const endDate = event.target.getAttribute('data-end-date');
+                    const endTime = event.target.getAttribute('data-end-time');
+                    const facility = event.target.getAttribute('data-facility');
+                    const description = event.target.getAttribute('data-description');
+                    const status = event.target.getAttribute('data-status');
+
+                    // Populate the modal with event details
+                    $('#eventDetailName').text(eventName);
+                    $('#eventDetailStartDate').text(startDate);
+                    $('#eventDetailStartTime').text(formatTimeTo12Hour(startTime)); // Convert to 12-hour format
+                    $('#eventDetailEndDate').text(endDate);
+                    $('#eventDetailEndTime').text(formatTimeTo12Hour(endTime)); // Convert to 12-hour format
+                    $('#eventDetailFacility').text(facility);
+                    $('#eventDetailDescription').text(description);
+                    $('#eventDetailStatus').text(status);
+
+                    // Show the modal
+                    $('#eventDetailsModal').modal('show');
                 }
             });
-            calendar.render();
+
         });
-
-    function getColorBasedOnStatus(status) {
-        switch (status) {
-            case 'Approve':
-                return 'green';
-            case 'Pending':
-                return 'blue';
-            case 'Reject':
-                return 'red';
-            case 'On Hold':
-                return 'orange';
-            default:
-                return 'gray';
-        }
-    }
-
-    // Facility filter
-    document.getElementById('facilityFilter').addEventListener('change', function() {
-        const selectedFacility = this.value;
-
-        calendar.getEvents().forEach(event => {
-            if (selectedFacility === 'all' || event.extendedProps.facility === selectedFacility) {
-                event.setProp('display', 'auto');
-            } else {
-                event.setProp('display', 'none');
-            }
-        });
-    });
-
-    // Helper function to format time to 12-hour format
-    function formatTimeTo12Hour(time) {
-        const [hours, minutes] = time.split(':');
-        let hours12 = parseInt(hours, 10);
-        const ampm = hours12 >= 12 ? 'PM' : 'AM';
-
-        if (hours12 > 12) {
-            hours12 -= 12;
-        } else if (hours12 === 0) {
-            hours12 = 12; // Convert 0 to 12 for midnight
-        }
-
-        return `${hours12}:${minutes} ${ampm}`;
-    }
-
-    // Add click event listener for event links in the upcoming events table
-    document.getElementById('upcomingEventsBody').addEventListener('click', function(event) {
-        if (event.target.classList.contains('event-link')) {
-            event.preventDefault();
-
-            const eventName = event.target.getAttribute('data-event-name');
-            const startDate = event.target.getAttribute('data-start-date');
-            const startTime = event.target.getAttribute('data-start-time');
-            const endDate = event.target.getAttribute('data-end-date');
-            const endTime = event.target.getAttribute('data-end-time');
-            const facility = event.target.getAttribute('data-facility');
-            const description = event.target.getAttribute('data-description');
-            const status = event.target.getAttribute('data-status');
-
-            // Populate the modal with event details
-            $('#eventDetailName').text(eventName);
-            $('#eventDetailStartDate').text(startDate);
-            $('#eventDetailStartTime').text(formatTimeTo12Hour(startTime)); // Convert to 12-hour format
-            $('#eventDetailEndDate').text(endDate);
-            $('#eventDetailEndTime').text(formatTimeTo12Hour(endTime)); // Convert to 12-hour format
-            $('#eventDetailFacility').text(facility);
-            $('#eventDetailDescription').text(description);
-            $('#eventDetailStatus').text(status);
-
-            // Show the modal
-            $('#eventDetailsModal').modal('show');
-        }
-    });
-
-});
-
     </script>
 
 
