@@ -1,9 +1,14 @@
 <?php
 session_start();
+// Prevent caching
+header("Cache-Control: no-cache, no-store, must-revalidate"); // HTTP 1.1
+header("Pragma: no-cache"); // HTTP 1.0
+header("Expires: 0"); // Proxies
+
 include 'partials/db_conn.php';
 
 if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 1) {
-    header("Location: login.php");
+    header("Location: ../login.php");
     exit();
 }
 
@@ -23,6 +28,7 @@ if (isset($_SESSION['admin_account_id'])) {
 // Fetch facilities from the database
 $sql = "SELECT name FROM facilities";
 $result = $conn->query($sql);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -456,15 +462,15 @@ $result = $conn->query($sql);
                         </div>
                         <div class="form-group">
                             <label for="letterOfRequest">Proposal (PDF)</label>
-                            <input type="file" class="form-control" id="letterOfRequest" name="letterOfRequest" accept=".pdf">
+                            <input type="file" class="form-control" id="letterOfRequest" name="letterOfRequest" accept=".pdf" require>
                         </div>
                         <div class="form-group">
                             <label for="facilityFormRequest">Facility Form Request (PDF)</label>
-                            <input type="file" class="form-control" id="facilityFormRequest" name="facilityFormRequest" accept=".pdf">
+                            <input type="file" class="form-control" id="facilityFormRequest" name="facilityFormRequest" accept=".pdf" require>
                         </div>
                         <div class="form-group">
                             <label for="contractOfLease">Student Activity Form (PDF)</label>
-                            <input type="file" class="form-control" id="contractOfLease" name="contractOfLease" accept=".pdf">
+                            <input type="file" class="form-control" id="contractOfLease" name="contractOfLease" accept=".pdf" require>
                         </div>
                         <button type="submit" class="btn btn-primary">Create Event</button>
                     </form>
@@ -499,6 +505,25 @@ $result = $conn->query($sql);
             </div>
         </div>
     </div>
+<!-- Success Modal -->
+<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="successModalLabel">Success</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Event created successfully!
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
     <!-- FullCalendar JavaScript -->
@@ -508,30 +533,38 @@ $result = $conn->query($sql);
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script>
-        $('#adminBookingForm').on('submit', function(event) {
-            event.preventDefault();
-            var formData = new FormData(this);
-            $.ajax({
-                url: 'partials/book_event.php',
-                type: 'POST',
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: function(response) {
-                    var result = JSON.parse(response);
-                    if (result.status === 'success') {
-                        alert(result.message);
+    $('#adminBookingForm').on('submit', function(event) {
+        event.preventDefault();
+        var formData = new FormData(this);
+        
+        $.ajax({
+            url: 'partials/book_event.php',
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function(response) {
+                var result = JSON.parse(response);
+                
+                if (result.status === 'success') {
+                    // Show the success modal
+                    $('#successModal').modal('show');
+                    
+                    // Optional: Reload the page after closing the success modal
+                    $('#successModal').on('hidden.bs.modal', function() {
                         location.reload();
-                    } else {
-                        alert(result.message);
-                    }
-                },
-                error: function() {
-                    alert('An error occurred. Please try again.');
+                    });
+                } else {
+                    alert(result.message); // Display error message if there's an issue
                 }
-            });
+            },
+            error: function() {
+                alert('An error occurred. Please try again.');
+            }
         });
-    </script>
+    });
+</script>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const calendarEl = document.getElementById('calendar');

@@ -418,6 +418,11 @@ $result = $conn->query($sql);
                             <select class="form-control" id="facility" name="facility" required>
                                 <option value="">Select a facility</option> <!-- Optional: Default option -->
                                 <?php
+                                // DB CONN
+                                include 'partials/db_conn.php';
+                                // Fetch facilities from the database
+                                $sql = "SELECT name FROM facilities";
+                                $result = $conn->query($sql);
                                 // Check if there are results
                                 if ($result->num_rows > 0) {
                                     // Output data for each row
@@ -455,6 +460,24 @@ $result = $conn->query($sql);
         </div>
     </div>
 
+    <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="successModalLabel">Success</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Event created successfully!
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Event Details Modal -->
     <div class="modal fade" id="eventDetailsModal" tabindex="-1" role="dialog" aria-labelledby="eventDetailsModalLabel" aria-hidden="true">
@@ -503,8 +526,12 @@ $result = $conn->query($sql);
                 success: function(response) {
                     var result = JSON.parse(response);
                     if (result.status === 'success') {
-                        alert(result.message);
-                        location.reload();
+                        $('#successModal').modal('show');
+
+                        // Optional: Reload the page after closing the success modal
+                        $('#successModal').on('hidden.bs.modal', function() {
+                            location.reload();
+                        });
                     } else {
                         alert(result.message);
                     }

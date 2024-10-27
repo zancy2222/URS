@@ -1,8 +1,21 @@
 <?php
-// Add cache control headers to prevent caching of the login page
-header("Cache-Control: no-cache, no-store, must-revalidate"); // HTTP 1.1.
-header("Pragma: no-cache"); // HTTP 1.0.
-header("Expires: 0"); // Proxies.
+session_start();
+
+// Redirect to the respective page if already logged in
+if (isset($_SESSION['account_type'])) {
+    switch ($_SESSION['account_type']) {
+        case 1:
+            header("Location: Admin/index.php");
+            break;
+        case 2:
+            header("Location: StudentLeader/index.php");
+            break;
+        case 3:
+            header("Location: Office/index.php");
+            break;
+    }
+    exit();
+}
 ?>
 
 
