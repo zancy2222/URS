@@ -352,30 +352,45 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 2) {
                 <?php
                 include 'partials/db_conn.php'; // Ensure connection to the database
 
-                // Query only student_leader_events
-                $query = "SELECT id, event_name, org_name, start_date, end_date, start_time, end_time, facility, status, 
-                  event_description, letter_of_request, facility_form_request, contract_of_lease, created_at AS timestamp 
-                  FROM student_leader_events
-                  WHERE 1=1";
+// Ensure the user is logged in and has an organization name
+if (!isset($_SESSION['org_name'])) {
+    echo "You must be logged in to view this page.";
+    exit();
+}
 
-                // Apply filters (if necessary)
-                if (!empty($statusFilter)) {
-                    $query .= " AND status = '" . $conn->real_escape_string($statusFilter) . "'";
-                }
-                if (!empty($facilityFilter)) {
-                    $query .= " AND facility LIKE '%" . $conn->real_escape_string($facilityFilter) . "%'";
-                }
-                if (!empty($startDateFilter)) {
-                    $query .= " AND start_date = '" . $conn->real_escape_string($startDateFilter) . "'";
-                }
-                if (!empty($timestampFilter)) {
-                    $query .= " AND DATE(created_at) = '" . $conn->real_escape_string($timestampFilter) . "'";
-                }
+// Query only student_leader_events
+$query = "SELECT id, event_name, org_name, start_date, end_date, start_time, end_time, facility, status, 
+          event_description, letter_of_request, facility_form_request, contract_of_lease, created_at AS timestamp 
+          FROM student_leader_events
+          WHERE org_name = ?"; // Filter by org_name
 
-                // Order by timestamp (newest first)
-                $query .= " ORDER BY timestamp DESC";
+// Prepare and bind parameters
+$stmt = $conn->prepare($query);
+$stmt->bind_param('s', $_SESSION['org_name']); // Bind the org_name from session
 
-                $result = $conn->query($query);
+// Apply additional filters (if necessary)
+if (!empty($statusFilter)) {
+    $query .= " AND status = '" . $conn->real_escape_string($statusFilter) . "'";
+}
+if (!empty($facilityFilter)) {
+    $query .= " AND facility LIKE '%" . $conn->real_escape_string($facilityFilter) . "%'";
+}
+if (!empty($startDateFilter)) {
+    $query .= " AND start_date = '" . $conn->real_escape_string($startDateFilter) . "'";
+}
+if (!empty($timestampFilter)) {
+    $query .= " AND DATE(created_at) = '" . $conn->real_escape_string($timestampFilter) . "'";
+}
+
+// Order by timestamp (newest first)
+$query .= " ORDER BY timestamp DESC";
+
+// Prepare the final statement
+$stmt = $conn->prepare($query);
+$stmt->bind_param('s', $_SESSION['org_name']); // Bind the org_name from session
+$stmt->execute();
+$result = $stmt->get_result();
+
 
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {

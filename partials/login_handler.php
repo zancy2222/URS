@@ -26,22 +26,46 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (password_verify($password, $user['password'])) {
             // Check if the user's sub-account matches the login attempt
             if ($account_type == 1 && $user['admin_account_id'] == $admin_account) { // Admin
-                // Set session variables
-                $_SESSION['username'] = $user['username'];
-                $_SESSION['account_type'] = $user['account_type_id'];
-                $_SESSION['admin_account_id'] = $user['admin_account_id'];  // Set this variable
+// Set session variables
+$_SESSION['username'] = $user['username'];
+$_SESSION['account_type'] = $user['account_type_id'];
+$_SESSION['admin_account_id'] = $user['admin_account_id']; // Set this variable
 
-                // Check if admin account is OSDS
-                $_SESSION['is_osds'] = ($user['admin_account_id'] == 3); // Assuming OSDS has ID 3
+// Check if admin account is OSDS
+$_SESSION['is_osds'] = ($user['admin_account_id'] == 3); // Assuming OSDS has ID 3
 
-                header("Location: ../Admin/index.php");
-                exit();
+// Fetch account_name based on admin_account_id
+$adminSql = "SELECT account_name FROM admin_account WHERE id = ?";
+$adminStmt = $conn->prepare($adminSql);
+$adminStmt->bind_param('i', $user['admin_account_id']);
+$adminStmt->execute();
+$adminResult = $adminStmt->get_result();
+
+if ($adminResult->num_rows > 0) {
+    $adminRow = $adminResult->fetch_assoc();
+    $_SESSION['account_name'] = $adminRow['account_name']; // Store account_name in session
+}
+
+header("Location: ../Admin/index.php");
+exit();
+
             } elseif ($account_type == 2 && $user['department_id'] == $department && $user['org_id'] == $org) { // Student Leader
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['account_type'] = $user['account_type_id'];
                 $_SESSION['sub_account'] = $user['org_id'];
-                $_SESSION['org_id'] = $user['org_id']; // Store org ID for later use
-                $_SESSION['user_id'] = $user['id']; // Ensure user_id is set
+                $_SESSION['org_id'] = $user['org_id'];
+                $_SESSION['user_id'] = $user['id'];
+            
+                // Fetch org_name based on org_id
+                $orgSql = "SELECT org_name FROM org WHERE id = ?";
+                $orgStmt = $conn->prepare($orgSql);
+                $orgStmt->bind_param('i', $user['org_id']);
+                $orgStmt->execute();
+                $orgResult = $orgStmt->get_result();
+                if ($orgResult->num_rows > 0) {
+                    $orgRow = $orgResult->fetch_assoc();
+                    $_SESSION['org_name'] = $orgRow['org_name']; // Store org_name in session
+                }
                 header("Location: ../StudentLeader/index.php");
                 exit();
             } elseif ($account_type == 3 && $user['office_id'] == $office) { // Office
