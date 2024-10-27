@@ -436,7 +436,7 @@ button.btn-primary:hover {
                                 Switch to Admin Account
                             </a>
 
-                        <a id="signout" class="dropdown-item" href="../login.php">
+                        <a id="signout" class="dropdown-item" href="../logout.php">
                             <img src="Header_Images/sign_out.png" alt="Icon" />
                             Log out</a>
                     </div>

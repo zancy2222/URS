@@ -1,4 +1,5 @@
 <?php
+include 'partials/db_conn.php';
 // Fetch facilities from the database
 $sql = "SELECT name FROM facilities";
 $result = $conn->query($sql);
@@ -314,6 +315,10 @@ $result = $conn->query($sql);
                         <select class="form-control" id="facility" name="facility" required>
                         <option value="">Select a facility</option> <!-- Optional: Default option -->
                                 <?php
+                                include 'partials/db_conn.php';
+                                // Fetch facilities from the database
+                                $sql = "SELECT name FROM facilities";
+                                $result = $conn->query($sql);
                                 // Check if there are results
                                 if ($result->num_rows > 0) {
                                     // Output data for each row

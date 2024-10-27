@@ -224,7 +224,7 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 1) {
                             </a>
                         <?php endif; ?>
 
-                        <a id="signout" class="dropdown-item" href="../login.php">
+                        <a id="signout" class="dropdown-item" href="../logout.php">
                             <img src="Header_Images/sign_out.png" alt="Icon" />
                             Log out</a>
                     </div>
@@ -235,13 +235,12 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 1) {
         </div>
     </nav>
     <div class="container mt-5">
-        <!-- Tabs for Accounts and Facilities -->
-        <ul class="nav nav-tabs" id="myTab" role="tablist">
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item">
                 <a class="nav-link active" id="accounts-tab" data-toggle="tab" href="#accounts" role="tab" aria-controls="accounts" aria-selected="true">ACCOUNTS</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="facilities-tab" data-toggle="tab" href="#facilities" role="tab" aria-controls="facilities" aria-selected="false">FACILITIES</a>
+                <a class="nav-link" id="facilities-tab"  href="#facilities" role="tab" aria-controls="facilities" aria-selected="false">FACILITIES</a>
             </li>
         </ul>
         <div class="tab-content" id="myTabContent">

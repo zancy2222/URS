@@ -416,7 +416,7 @@ button.btn-primary:hover {
                             Profile</a>
                       
 
-                        <a id="signout" class="dropdown-item" href="../login.php">
+                        <a id="signout" class="dropdown-item" href="../logout.php">
                             <img src="Header_Images/sign_out.png" alt="Icon" />
                             Log out</a>
                     </div>

@@ -324,7 +324,7 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 1) {
                             </a>
                         <?php endif; ?>
 
-                        <a id="signout" class="dropdown-item" href="../login.php">
+                        <a id="signout" class="dropdown-item" href="../logout.php">
                             <img src="Header_Images/sign_out.png" alt="Icon" />
                             Log out</a>
                     </div>

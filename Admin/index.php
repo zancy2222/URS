@@ -306,7 +306,7 @@ $result = $conn->query($sql);
                             </a>
                         <?php endif; ?>
 
-                        <a id="signout" class="dropdown-item" href="../login.php">
+                        <a id="signout" class="dropdown-item" href="../logout.php">
                             <img src="Header_Images/sign_out.png" alt="Icon" />
                             Log out</a>
                     </div>
@@ -327,8 +327,8 @@ $result = $conn->query($sql);
                     <!-- "Book an Event" Button -->
                     <button class="btn btn-primary mb-3" data-toggle="modal" data-target="#bookEventModal">Book an Event</button>
 
-                    <div id="calendar"></div>
                 <?php endif; ?>
+                <div id="calendar"></div>
 
 
                 <!-- Legends Section -->
@@ -432,6 +432,10 @@ $result = $conn->query($sql);
                             <select class="form-control" id="facility" name="facility" required>
                                 <option value="">Select a facility</option> <!-- Optional: Default option -->
                                 <?php
+                                include 'partials/db_conn.php';
+                                // Fetch facilities from the database
+                                $sql = "SELECT name FROM facilities";
+                                $result = $conn->query($sql);
                                 // Check if there are results
                                 if ($result->num_rows > 0) {
                                     // Output data for each row
