@@ -405,43 +405,69 @@ if (!isset($_SESSION['username']) || $_SESSION['account_type'] != 1) {
                        event_description, letter_of_request, facility_form_request, contract_of_lease, created_at AS timestamp, 
                        'admin' AS event_type
                 FROM admin_events
-                WHERE 1=1
+                WHERE 1=1";
             
-                UNION ALL
+            // Apply filters to admin events
+            if (!empty($statusFilter)) {
+                $query .= " AND status = '" . $conn->real_escape_string($statusFilter) . "'";
+            }
+            if (!empty($facilityFilter)) {
+                $query .= " AND facility LIKE '%" . $conn->real_escape_string($facilityFilter) . "%'";
+            }
+            if (!empty($startDateFilter)) {
+                $query .= " AND start_date = '" . $conn->real_escape_string($startDateFilter) . "'";
+            }
+            if (!empty($timestampFilter)) {
+                $query .= " AND DATE(created_at) = '" . $conn->real_escape_string($timestampFilter) . "'";
+            }
             
+            // UNION with student_leader_events query and apply the same filters
+            $query .= " UNION ALL
                 SELECT id, event_name, org_name AS account_name, start_date, end_date, start_time, end_time, facility, status, 
                        event_description, letter_of_request, facility_form_request, contract_of_lease, created_at AS timestamp, 
                        'student_leader' AS event_type
                 FROM student_leader_events
+                WHERE 1=1";
             
-                UNION ALL
+            if (!empty($statusFilter)) {
+                $query .= " AND status = '" . $conn->real_escape_string($statusFilter) . "'";
+            }
+            if (!empty($facilityFilter)) {
+                $query .= " AND facility LIKE '%" . $conn->real_escape_string($facilityFilter) . "%'";
+            }
+            if (!empty($startDateFilter)) {
+                $query .= " AND start_date = '" . $conn->real_escape_string($startDateFilter) . "'";
+            }
+            if (!empty($timestampFilter)) {
+                $query .= " AND DATE(created_at) = '" . $conn->real_escape_string($timestampFilter) . "'";
+            }
             
+            // UNION with office_events query and apply the same filters
+            $query .= " UNION ALL
                 SELECT id, event_name, office_name AS account_name, start_date, end_date, start_time, end_time, facility, status, 
                        event_description, letter_of_request, facility_form_request, contract_of_lease, created_at AS timestamp, 
                        'office' AS event_type
                 FROM office_events
-            ";
+                WHERE 1=1";
             
-
-                // Apply filters
-                if (!empty($statusFilter)) {
-                    $query .= " AND status = '" . $conn->real_escape_string($statusFilter) . "'";
-                }
-                if (!empty($facilityFilter)) {
-                    $query .= " AND facility LIKE '%" . $conn->real_escape_string($facilityFilter) . "%'";
-                }
-                if (!empty($startDateFilter)) {
-                    $query .= " AND start_date = '" . $conn->real_escape_string($startDateFilter) . "'";
-                }
-                if (!empty($timestampFilter)) {
-                    $query .= " AND DATE(created_at) = '" . $conn->real_escape_string($timestampFilter) . "'";
-                }
-
-                // Order by timestamp (newest first)
-                $query .= " ORDER BY timestamp DESC";
-
-                $result = $conn->query($query);
-
+            if (!empty($statusFilter)) {
+                $query .= " AND status = '" . $conn->real_escape_string($statusFilter) . "'";
+            }
+            if (!empty($facilityFilter)) {
+                $query .= " AND facility LIKE '%" . $conn->real_escape_string($facilityFilter) . "%'";
+            }
+            if (!empty($startDateFilter)) {
+                $query .= " AND start_date = '" . $conn->real_escape_string($startDateFilter) . "'";
+            }
+            if (!empty($timestampFilter)) {
+                $query .= " AND DATE(created_at) = '" . $conn->real_escape_string($timestampFilter) . "'";
+            }
+            
+            // Order by timestamp (newest first)
+            $query .= " ORDER BY timestamp DESC";
+            
+            // Execute the query
+            $result = $conn->query($query);
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
                 ?>
