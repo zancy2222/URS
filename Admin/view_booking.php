@@ -372,44 +372,59 @@ if (!isset($_SESSION['account_name'])) {
     exit();
 }
 
-// Query only admin_events
+// Get filter values from GET parameters
+$statusFilter = $_GET['status'] ?? '';
+$facilityFilter = $_GET['facility'] ?? '';
+$startDateFilter = $_GET['start_date'] ?? '';
+$timestampFilter = $_GET['timestamp'] ?? '';
+
+// Base query
 $query = "SELECT id, event_name, account_name, start_date, end_date, start_time, end_time, facility, status, 
           event_description, letter_of_request, facility_form_request, contract_of_lease, created_at AS timestamp 
           FROM admin_events
-          WHERE account_name = ?"; // Filter by account_name
+          WHERE account_name = ?";
 
-// Prepare and bind parameters
-$stmt = $conn->prepare($query);
-$stmt->bind_param('s', $_SESSION['account_name']); // Bind the account_name from session
+// Array to hold parameter types and values
+$types = 's';
+$params = [$_SESSION['account_name']];
 
-// Apply additional filters (if necessary)
+// Add conditions based on filters
 if (!empty($statusFilter)) {
     $query .= " AND status = ?";
-    $stmt->bind_param('s', $statusFilter);
+    $types .= 's';
+    $params[] = $statusFilter;
 }
+
 if (!empty($facilityFilter)) {
     $query .= " AND facility LIKE ?";
-    $facilityFilter = '%' . $facilityFilter . '%'; // Add wildcard for LIKE
-    $stmt->bind_param('s', $facilityFilter);
+    $types .= 's';
+    $params[] = '%' . $facilityFilter . '%';
 }
+
 if (!empty($startDateFilter)) {
     $query .= " AND start_date = ?";
-    $stmt->bind_param('s', $startDateFilter);
+    $types .= 's';
+    $params[] = $startDateFilter;
 }
+
 if (!empty($timestampFilter)) {
     $query .= " AND DATE(created_at) = ?";
-    $stmt->bind_param('s', $timestampFilter);
+    $types .= 's';
+    $params[] = $timestampFilter;
 }
 
 // Order by timestamp (newest first)
 $query .= " ORDER BY timestamp DESC";
 
-// Prepare the final statement
+// Prepare the statement
 $stmt = $conn->prepare($query);
-$stmt->bind_param('s', $_SESSION['account_name']); // Bind the account_name from session
+
+// Bind all parameters dynamically
+$stmt->bind_param($types, ...$params);
+
+// Execute the query
 $stmt->execute();
 $result = $stmt->get_result();
-
 
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
